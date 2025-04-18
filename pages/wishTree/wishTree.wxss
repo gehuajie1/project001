@@ -1,0 +1,144 @@
+/* pages/wishingTreePage/wishingTreePage.wxss */
+
+.tree-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.tree-image {
+  width: 100%;
+  height: 100%;
+}
+
+.add-wish-btn {
+  position: absolute;
+  top: 72vh;
+  left: 40.5vw;
+  height: 7vh;
+  width: 10vw;
+}
+
+.wish-icon {
+  height: 6vh;
+  position: absolute;
+}
+
+.completed-container {
+  padding: var(--spacing-unit);
+}
+
+.wish-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgb(131, 225, 248);
+  border-radius: var(--border-radius);
+  border: 3rpx solid #E0E3DA;
+  box-shadow: var(--shadow);
+  margin: 30rpx;
+  padding: 30rpx;
+  margin-top: 5vh;
+}
+
+.wish-info {
+  flex: 1;
+  margin-left: 25rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.wish-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-normal);
+}
+
+.wish-time {
+  font-size: var(--font-size-small);
+  color: #666;
+  margin-top: 10rpx;
+}
+
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 5rpx;
+  background: rgb(132, 209, 129);
+  font-size: 25rpx;
+  color: #000000;
+  align-items: center;
+  justify-content: space-around;
+  border-top-left-radius: 20%;
+  border-top-right-radius: 20%;
+  box-shadow: var(--shadow);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+.tab-divider {
+  width: 1rpx;
+  height: 72rpx;
+  background-color: rgb(24, 133, 82);
+}
+
+.tab-icon {
+  width: 54rpx;
+  height: 54rpx;
+  margin-bottom: 10rpx;
+}
+
+.wish-form {
+  padding: var(--spacing-unit);
+}
+
+.submit-btn {
+  margin: var(--spacing-unit) auto;
+}
+
+.dialog-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.dialog-content {
+  width: 80vw;
+  padding: var(--spacing-unit);
+  background-color: #fff;
+  border-radius: var(--border-radius);
+}
+
+.wish-details {
+  width: 100%;
+  margin-bottom: var(--spacing-unit);
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: var(--spacing-unit);
+}
+
+/* 响应式调整 */
+@media screen and (min-width: 768px) {
+  .completed-container {
+    max-width: 750rpx;
+    margin: 0 auto;
+  }
+  
+  .wish-card {
+    margin: 20rpx;
+  }
+}

@@ -1,0 +1,79 @@
+<!--pages/wishingTreePage/wishingTreePage.wxml-->
+
+<view class="container">
+    <!-- 大树 -->
+    <view wx:if="{{choose==0}}" class="tree-container">
+        <image class="tree-image" src="{{treeImg}}"></image>
+        <van-button icon="star-o" color="#1a3eb4" bind:click="showPopup" class="add-wish-btn" />
+        <view wx:for="{{wishList}}" wx:key="index">
+            <image bindlongpress="showDelete" bindtap="onClickShow" class="wish-icon" data-id="{{item.id}}" data-wishContent="{{item.wishContent}}" data-wishProportion="{{item.wishProportion}}" mode="heightFix" src="{{wishIcon}}" style="top:{{wishlocal[index][0]}}vh;left:{{wishlocal[index][1]}}vw;transform:rotate({{wishlocal[index][2]}}deg);"></image>
+        </view>
+    </view>
+
+    <!-- 已实现界面 -->
+    <view wx:if="{{choose==1}}" class="completed-container">
+        <view wx:for="{{wishList1}}" wx:key="index" class="wish-card">
+            <van-image width="3rem" height="3rem" fit="contain" src="{{completeIcon}}" />
+            <view class="wish-info">
+                <view class="wish-content">
+                    <text>{{item.userName}}的心愿:{{item.wishContent}}</text>
+                </view>
+                <text class="wish-time">实现时间：{{item.submitTime}}</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 底部导航栏 -->
+    <view class="tab-bar">
+        <view class="tab-item" bindtap="addWish">
+            <image class="tab-icon" src="{{wishPoolImg}}" wx:if="{{choose==0}}"></image>
+            <image class="tab-icon" src="{{wishPoolImg1}}" wx:if="{{choose==1}}"></image>
+            <text>心愿</text>
+        </view>
+        <view class="tab-divider"></view>
+        <view class="tab-item" bindtap="completeWish">
+            <image class="tab-icon" src="{{wishImg}}" wx:if="{{choose==1}}"></image>
+            <image class="tab-icon" src="{{wishImg1}}" wx:if="{{choose==0}}"></image>
+            <text>已实现</text>
+        </view>
+    </view>
+
+    <!-- 添加心愿弹窗 -->
+    <van-popup show="{{ show }}" closeable round close-icon="close" position="bottom" custom-style="height: 35%" bind:close="onClose" close-icon-position="top-right">
+        <van-cell-group class="wish-form">
+            <van-field value="{{ wishContent }}" required label="心愿名称：" maxlength="20" custom-style="width: 100%" placeholder="请输入想要的心愿！" bind:change="onChange1" />
+            <van-cell title="心愿比重：" required>
+                <view slot="">
+                    <van-rate value="{{wishProportion}}" bind:change="onChange" />
+                </view>
+            </van-cell>
+        </van-cell-group>
+        <van-button round type="info" custom-style="width: 80%" class="submit-btn" bindtap="addbtn">添加心愿</van-button>
+    </van-popup>
+
+    <!-- 愿望详情弹窗 -->
+    <van-overlay show="{{show1}}">
+        <view class="dialog-wrapper">
+            <view class="dialog-content">
+                <van-cell-group class="wish-details">
+                    <van-cell title="愿望名称" value="{{wishContent}}" />
+                    <van-cell title="心愿比重">
+                        <view slot="">
+                            <van-rate value="{{wishProportion}}" disabled bind:change="onChange" />
+                        </view>
+                    </van-cell>
+                </van-cell-group>
+                <view class="action-buttons">
+                    <van-button color="#272643" plain bindtap="onClickHide">取消</van-button>
+                    <van-button color="#f66fb9" plain bindtap="delete">删除</van-button>
+                    <van-button color="#f66fb9" plain bindtap="complete">实现</van-button>
+                </view>
+            </view>
+        </view>
+    </van-overlay>
+</view>
+
+<!-- 确认窗口 -->
+<!-- <van-dialog id="van-dialog" /> -->
+<!-- 通知窗口 -->
+<!-- <van-notify id="van-notify" /> -->

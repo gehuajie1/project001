@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "To Our Loves",
+  "navigationBarBackgroundColor": "#fff",
+  "usingComponents": {
+    "custom-swiper":"../../common/customSwiper/customSwiper"
+  }
+  
+}

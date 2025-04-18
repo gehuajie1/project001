@@ -1,0 +1,47 @@
+<view class="login-container">
+  <image class="background-image" src="/images/icons/login.png" mode="aspectFill"></image>
+  <view class="content-wrapper">
+    <view class="title-container">
+      <view class="logo">
+        <image src="/images/icons/flower.png" mode="aspectFit"></image>
+      </view>
+      <view>
+        <view class="title">情侣空间</view>
+        <view class="subtitle">记录点点滴滴</view>
+      </view>
+    </view>
+    <view class="login-form">
+      <van-cell-group inset>
+        <van-field
+          value="{{ username }}"
+          placeholder="请输入用户名"
+          border="{{ false }}"
+          use-icon-slot
+          bind:change="onUsernameChange"
+        >
+          <image slot="left-icon" src="/images/icons/user.png" style="width: 20px; height: 20px;" />
+        </van-field>
+        <van-field
+          value="{{ password }}"
+          type="password"
+          placeholder="请输入密码"
+          border="{{ false }}"
+          use-icon-slot
+          bind:change="onPasswordChange"
+        >
+          <image slot="left-icon" src="/images/icons/loving.png" style="width: 20px; height: 20px;" />
+        </van-field>
+      </van-cell-group>
+      <view class="remember-forgot">
+        <checkbox-group bindchange="onRememberChange">
+          <checkbox value="remember" checked="{{ rememberMe }}">记住我</checkbox>
+        </checkbox-group>
+        <view class="forgot-password" bindtap="onForgotPassword">忘记密码？</view>
+      </view>
+      <view class="login-buttons">
+        <van-button type="primary" block bind:click="handleLogin">登录</van-button>
+      </view>
+      <view class="register-link" bindtap="goToRegister">还没有账号？立即注册</view>
+    </view>
+  </view>
+</view> 

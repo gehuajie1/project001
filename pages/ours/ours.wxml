@@ -1,0 +1,52 @@
+<view class="content">
+  <view class="head_1">
+    <view>{{imgTitle}}</view>
+    <!-- <view>琴瑟愿与，共沐春秋</view> -->
+  </view>
+  <view class="head_2">
+    <!-- <swiper class="swiper" autoplay indicator-dots circular>
+      <block wx:for="{{imgUrls}}" wx:key="item">
+        <swiper-item>
+          <image src="{{item}}" />
+        </swiper-item>
+      </block>
+    </swiper> -->
+
+    <custom-swiper imgUrls="{{imgUrls}}"></custom-swiper>
+
+  </view>
+  <view class="container">
+    <view class="content_head">
+      <view>choice</view>
+      <view>功能选择</view>
+    </view>
+    <view class="content_content">
+      <view>
+        <navigator url="../anniversary/anniversary" open-type="navigate">
+          <image src="../../icon/icon/jinianri.png" />
+          <view>纪念日</view>
+        </navigator>
+      </view>
+
+
+      <view>
+        <navigator url="../account/account" open-type="navigate">
+            <image src="../../icon/icon/jizhang.png" />
+            <view>记账</view>
+        </navigator>
+      </view>
+      <view>
+        <navigator url="../punch/punch" open-type="navigate">
+        <image src="../../icon/icon/daka.png" />
+        <view>打卡</view>
+        </navigator>
+      </view>
+      <view>
+        <navigator url="../wishTree/wishTree" open-type="navigate">
+        <image src="../../icon/icon/tree.png" />
+        <view>许愿树</view>
+        </navigator>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,294 @@
+.container {
+  background-color: #f7f8fa;
+  min-height: 100vh;
+  padding: 20rpx;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+  background-color: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.user-info {
+  margin-top: 20rpx;
+  text-align: center;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #323233;
+  margin-bottom: 10rpx;
+}
+
+.streak {
+  font-size: 28rpx;
+  color: #969799;
+}
+
+.checkin-card {
+  margin-bottom: 20rpx;
+}
+
+.calendar-card {
+  margin-bottom: 20rpx;
+}
+
+.checkin-history {
+  margin-bottom: 20rpx;
+}
+
+.action-buttons {
+  margin: 40rpx 20rpx;
+}
+
+/* 自定义Vant组件样式 */
+.van-cell-group--inset {
+  margin: 20rpx !important;
+  border-radius: 16rpx !important;
+  overflow: hidden !important;
+}
+
+.van-cell {
+  padding: 20rpx !important;
+}
+
+.van-cell__title {
+  color: #323233 !important;
+}
+
+.van-cell__value {
+  color: #969799 !important;
+}
+
+.van-cell__label {
+  color: #FF69B4 !important;
+}
+
+.checkin-button {
+  background-color: #FF69B4 !important;
+  border: none !important;
+  border-radius: 8rpx !important;
+  height: 88rpx !important;
+  line-height: 88rpx !important;
+  font-size: 32rpx !important;
+}
+
+.checkin-button--disabled {
+  background-color: #ffb6c1 !important;
+}
+
+.checkin-list {
+  margin-top: 30rpx;
+}
+
+.checkin-item {
+  display: flex;
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.checkin-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.checkin-info .location {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.checkin-info .date {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.checkin-image {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 10rpx;
+  margin-left: 20rpx;
+}
+
+.add-checkin {
+  padding: 30rpx;
+}
+
+.add-btn {
+  background: #FF69B4;
+  color: white;
+  border-radius: 20rpx;
+  padding: 20rpx 0;
+  text-align: center;
+}
+
+.checkin-container {
+  padding: 20rpx;
+  background-color: #f7f8fa;
+  min-height: 100vh;
+}
+
+/* 卡片通用样式 */
+.card {
+  background-color: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
+}
+
+/* 统计卡片 */
+.stats-card {
+  display: flex;
+  justify-content: space-around;
+  padding: 30rpx;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin-bottom: 8rpx;
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 日历卡片 */
+.calendar-card {
+  padding: 20rpx;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.month {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 20rpx;
+}
+
+.weekdays {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10rpx;
+}
+
+.weekdays text {
+  width: 14.28%;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.day {
+  width: 14.28%;
+  height: 80rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.day .date {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.day.other-month .date {
+  color: #ccc;
+}
+
+.day.today .date {
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+.day.checked .date {
+  color: #07c160;
+}
+
+.check-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20rpx;
+  color: #07c160;
+}
+
+/* 记录卡片 */
+.records-card {
+  padding: 20rpx;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.card-header .title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.record-item {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.record-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}

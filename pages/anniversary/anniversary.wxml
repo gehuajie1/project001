@@ -1,0 +1,118 @@
+<view class="anniversary-container">
+  <!-- 顶部统计 -->
+  <view class="stats-card card">
+    <view class="stats-item">
+      <text class="stats-value">{{totalAnniversaries}}</text>
+      <text class="stats-label">纪念日总数</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{upcomingDays}}</text>
+      <text class="stats-label">最近纪念日</text>
+    </view>
+  </view>
+
+  <!-- 添加纪念日按钮 -->
+  <view class="add-button">
+    <van-button type="primary" icon="plus" block bind:click="showAddPopup">添加纪念日</van-button>
+  </view>
+
+  <!-- 纪念日列表 -->
+  <view class="anniversary-list">
+    <view class="anniversary-item card" wx:for="{{anniversaryList}}" wx:key="id" bindtap="showDetail" data-id="{{item.id}}">
+      <view class="item-header">
+        <text class="title">{{item.title}}</text>
+        <text class="days" wx:if="{{item.days > 0}}">还有{{item.days}}天</text>
+        <text class="days today" wx:else>今天</text>
+      </view>
+      <view class="item-content">
+        <text class="date">{{item.date}}</text>
+        <text class="desc">{{item.description}}</text>
+      </view>
+      <view class="item-footer">
+        <van-tag type="primary" wx:if="{{item.isYearly}}">每年提醒</van-tag>
+        <van-tag type="success" wx:if="{{item.isImportant}}">重要</van-tag>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加纪念日弹窗 -->
+  <van-popup show="{{showAdd}}" position="bottom" custom-style="height: 80%" bind:close="hideAddPopup">
+    <view class="popup-header">
+      <text class="title">添加纪念日</text>
+      <van-icon name="cross" bind:click="hideAddPopup" />
+    </view>
+    <view class="popup-content">
+      <van-field
+        label="标题"
+        placeholder="请输入纪念日标题"
+        value="{{form.title}}"
+        bind:change="onTitleChange"
+      />
+      <van-field
+        label="日期"
+        placeholder="请选择日期"
+        value="{{form.date}}"
+        bind:click="showDatePicker"
+        readonly
+      />
+      <van-field
+        label="描述"
+        type="textarea"
+        placeholder="请输入纪念日描述"
+        value="{{form.description}}"
+        bind:change="onDescriptionChange"
+      />
+      <van-cell title="每年提醒" center>
+        <van-switch size="24" checked="{{form.isYearly}}" bind:change="onYearlyChange" />
+      </van-cell>
+      <van-cell title="重要纪念日" center>
+        <van-switch size="24" checked="{{form.isImportant}}" bind:change="onImportantChange" />
+      </van-cell>
+    </view>
+    <view class="popup-footer">
+      <van-button type="primary" block bind:click="submitForm">保存</van-button>
+    </view>
+  </van-popup>
+
+  <!-- 日期选择器 -->
+  <van-popup show="{{showDatePicker}}" position="bottom">
+    <van-datetime-picker
+      type="date"
+      value="{{currentDate}}"
+      min-date="{{minDate}}"
+      max-date="{{maxDate}}"
+      bind:confirm="onDateConfirm"
+      bind:cancel="hideDatePicker"
+    />
+  </van-popup>
+
+  <!-- 纪念日详情弹窗 -->
+  <van-popup show="{{showDetail}}" position="bottom" custom-style="height: 60%" bind:close="hideDetail">
+    <view class="popup-header">
+      <text class="title">{{currentAnniversary.title}}</text>
+      <van-icon name="cross" bind:click="hideDetail" />
+    </view>
+    <view class="popup-content">
+      <view class="detail-item">
+        <text class="label">日期：</text>
+        <text class="value">{{currentAnniversary.date}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">描述：</text>
+        <text class="value">{{currentAnniversary.description}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">状态：</text>
+        <text class="value" wx:if="{{currentAnniversary.days > 0}}">还有{{currentAnniversary.days}}天</text>
+        <text class="value" wx:else>今天</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">提醒：</text>
+        <text class="value">{{currentAnniversary.isYearly ? '每年提醒' : '仅一次'}}</text>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <van-button type="danger" block bind:click="deleteAnniversary">删除</van-button>
+    </view>
+  </van-popup>
+</view> 

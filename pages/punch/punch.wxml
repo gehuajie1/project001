@@ -1,0 +1,37 @@
+<view class="container">
+    <view wx:if="{{addListShow}}">
+        <form bindsubmit="updategoodlist">
+            <van-cell-group inset class="card">
+                <van-field label="备注" size="large" value="{{ remark.remarks }}" required placeholder="请输入备注" border="{{ true }}" maxlength="40" />
+                <van-field label="地点：" size="large" required bindtap="tapAddrress" required center readonly model:value="{{ remark.address }}" placeholder="请选择地点" />
+                <!-- <van-field label="图片" size="large" required use-button-slot input-class="fieldClass" error-message="{{checkData.fileList}}" model:value="{{ formData.fileList }}" name="fileList" data-name="fileList">
+                    <van-uploader file-list="{{ formData.fileList }}" data-name="fileList" slot="button" bind:after-read="afterRead" deletable="{{ true }}" max-count="2" accept="image" bind:delete="deleteImg" />
+                </van-field> -->
+            </van-cell-group>
+        </form>
+        <van-popup show="{{showAddress}}" bind:close="onClose" position="bottom" custom-style="height: 100%">
+            <view class="address-container">
+                <view class="search-header">
+                    <view class="back-btn" bindtap="back">
+                        <text class="iconfont icon-fanhui"></text>
+                    </view>
+                    <view class="search-box {{addListShow?'search-box1':''}}">
+                        <input bindinput="getsuggest" model:value="{{ remark.address }}" placeholder="请输入地址"></input>
+                    </view>
+                </view>
+                <scroll-view class="address-list" scroll-y>
+                    <view class="address-item" wx:for="{{suggestion}}" wx:key="index" bindtap="backfill" data-name="{{item.title}}">
+                        <view class="address-title">{{item.title}}</view>
+                        <view class="address-detail">{{item.addr}}</view>
+                    </view>
+                </scroll-view>
+            </view>
+        </van-popup>
+    </view>
+    <view wx:if="{{!addListShow}}" class="map-container">
+        <map id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="6" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location></map>
+        <view class="action-btn">
+            <van-button type="primary" size="large" bindtap="showAddList">添加打卡</van-button>
+        </view>
+    </view>
+</view>

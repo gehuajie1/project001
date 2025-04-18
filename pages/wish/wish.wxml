@@ -1,0 +1,155 @@
+<view class="wish-container">
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-item">
+      <text class="stats-value">{{stats.total}}</text>
+      <text class="stats-label">总愿望</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.completed}}</text>
+      <text class="stats-label">已完成</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.progress}}%</text>
+      <text class="stats-label">完成率</text>
+    </view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-button" bind:click="showAdd">
+    <van-icon name="plus" />
+  </view>
+
+  <!-- 愿望列表 -->
+  <view class="wish-list">
+    <view class="wish-item" wx:for="{{wishes}}" wx:key="id" bind:click="showDetail" data-id="{{item.id}}">
+      <view class="wish-header">
+        <text class="wish-title">{{item.title}}</text>
+        <view class="wish-status {{item.status === 'completed' ? 'completed' : ''}}">
+          {{item.status === 'completed' ? '已完成' : '进行中'}}
+        </view>
+      </view>
+      <view class="wish-content">
+        <text class="wish-description">{{item.description}}</text>
+        <view class="wish-progress">
+          <view class="progress-bar">
+            <view class="progress-inner" style="width: {{item.progress}}%"></view>
+          </view>
+          <text class="progress-text">{{item.progress}}%</text>
+        </view>
+      </view>
+      <view class="wish-footer">
+        <text class="wish-date">创建于：{{item.createTime}}</text>
+        <text class="wish-priority {{item.priority}}">{{item.priority === 'high' ? '高优先级' : item.priority === 'medium' ? '中优先级' : '低优先级'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加愿望弹窗 -->
+  <van-popup show="{{showAddPopup}}" position="bottom" custom-style="height: 80%" bind:close="hideAdd">
+    <view class="popup-header">
+      <text class="popup-title">添加愿望</text>
+      <van-icon name="cross" bind:click="hideAdd" />
+    </view>
+    <view class="popup-content">
+      <van-field
+        label="标题"
+        placeholder="请输入愿望标题"
+        value="{{form.title}}"
+        bind:change="onInput"
+        data-field="title"
+      />
+      <van-field
+        label="描述"
+        type="textarea"
+        placeholder="请输入愿望描述"
+        value="{{form.description}}"
+        bind:change="onInput"
+        data-field="description"
+      />
+      <van-field
+        label="优先级"
+        value="{{form.priorityText}}"
+        placeholder="请选择优先级"
+        readonly
+        bind:click="showPriorityPicker"
+      />
+      <van-field
+        label="目标日期"
+        value="{{form.targetDate}}"
+        placeholder="请选择目标日期"
+        readonly
+        bind:click="showDatePicker"
+      />
+    </view>
+    <view class="popup-footer">
+      <van-button type="primary" block bind:click="submitForm">确定</van-button>
+    </view>
+  </van-popup>
+
+  <!-- 优先级选择器 -->
+  <van-popup show="{{showPriorityPicker}}" position="bottom">
+    <van-picker
+      show-toolbar
+      title="选择优先级"
+      columns="{{priorityOptions}}"
+      bind:confirm="onPriorityConfirm"
+      bind:cancel="hidePriorityPicker"
+    />
+  </van-popup>
+
+  <!-- 日期选择器 -->
+  <van-popup show="{{showDatePicker}}" position="bottom">
+    <van-datetime-picker
+      type="date"
+      value="{{currentDate}}"
+      min-date="{{minDate}}"
+      bind:confirm="onDateConfirm"
+      bind:cancel="hideDatePicker"
+    />
+  </van-popup>
+
+  <!-- 愿望详情弹窗 -->
+  <van-popup show="{{showDetailPopup}}" position="bottom" custom-style="height: 80%" bind:close="hideDetail">
+    <view class="popup-header">
+      <text class="popup-title">愿望详情</text>
+      <van-icon name="cross" bind:click="hideDetail" />
+    </view>
+    <view class="popup-content">
+      <view class="detail-item">
+        <text class="detail-label">标题</text>
+        <text class="detail-value">{{currentWish.title}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">描述</text>
+        <text class="detail-value">{{currentWish.description}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">优先级</text>
+        <text class="detail-value {{currentWish.priority}}">
+          {{currentWish.priority === 'high' ? '高优先级' : currentWish.priority === 'medium' ? '中优先级' : '低优先级'}}
+        </text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">创建时间</text>
+        <text class="detail-value">{{currentWish.createTime}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">目标日期</text>
+        <text class="detail-value">{{currentWish.targetDate}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">进度</text>
+        <view class="detail-progress">
+          <view class="progress-bar">
+            <view class="progress-inner" style="width: {{currentWish.progress}}%"></view>
+          </view>
+          <text class="progress-text">{{currentWish.progress}}%</text>
+        </view>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <van-button type="danger" block bind:click="deleteWish">删除愿望</van-button>
+    </view>
+  </van-popup>
+</view> 

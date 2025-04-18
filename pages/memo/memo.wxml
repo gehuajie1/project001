@@ -1,0 +1,138 @@
+<view class="memo-container">
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-item">
+      <text class="stats-value">{{stats.total}}</text>
+      <text class="stats-label">总备忘录</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.completed}}</text>
+      <text class="stats-label">已完成</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.progress}}%</text>
+      <text class="stats-label">完成率</text>
+    </view>
+  </view>
+
+  <!-- 备忘录列表 -->
+  <view class="memo-list">
+    <view class="memo-item" wx:for="{{memos}}" wx:key="id" bindtap="showDetail" data-id="{{item.id}}">
+      <view class="memo-header">
+        <text class="memo-title">{{item.title}}</text>
+        <text class="memo-status {{item.status === 'completed' ? 'completed' : ''}}">
+          {{item.status === 'completed' ? '已完成' : '进行中'}}
+        </text>
+      </view>
+      <view class="memo-content">
+        <text class="memo-description">{{item.description}}</text>
+      </view>
+      <view class="memo-footer">
+        <text class="memo-time">{{item.createTime}}</text>
+        <text class="memo-priority {{item.priority}}">{{item.priorityText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-button" bindtap="showAdd">
+    <van-icon name="plus" size="24px" color="#fff" />
+  </view>
+
+  <!-- 添加备忘录弹窗 -->
+  <van-popup show="{{showAddPopup}}" position="bottom" round bind:close="hideAdd">
+    <view class="popup-header">
+      <text class="popup-title">添加备忘录</text>
+      <van-icon name="cross" size="20px" bindtap="hideAdd" />
+    </view>
+    <view class="popup-content">
+      <van-field
+        value="{{form.title}}"
+        label="标题"
+        placeholder="请输入备忘录标题"
+        data-field="title"
+        bind:change="onInput"
+      />
+      <van-field
+        value="{{form.description}}"
+        label="内容"
+        type="textarea"
+        placeholder="请输入备忘录内容"
+        data-field="description"
+        bind:change="onInput"
+      />
+      <van-field
+        value="{{form.priorityText}}"
+        label="优先级"
+        placeholder="请选择优先级"
+        readonly
+        bindtap="showPriorityPicker"
+      />
+      <van-field
+        value="{{form.targetDate}}"
+        label="目标日期"
+        placeholder="请选择目标日期"
+        readonly
+        bindtap="showDatePicker"
+      />
+    </view>
+    <view class="popup-footer">
+      <van-button type="primary" block bind:click="submitForm">确定</van-button>
+    </view>
+  </van-popup>
+
+  <!-- 优先级选择器 -->
+  <van-popup show="{{showPriorityPicker}}" position="bottom" round>
+    <van-picker
+      show-toolbar
+      title="选择优先级"
+      columns="{{priorityOptions}}"
+      bind:cancel="hidePriorityPicker"
+      bind:confirm="onPriorityConfirm"
+    />
+  </van-popup>
+
+  <!-- 日期选择器 -->
+  <van-popup show="{{showDatePicker}}" position="bottom" round>
+    <van-datetime-picker
+      type="date"
+      value="{{currentDate}}"
+      min-date="{{minDate}}"
+      bind:cancel="hideDatePicker"
+      bind:confirm="onDateConfirm"
+    />
+  </van-popup>
+
+  <!-- 详情弹窗 -->
+  <van-popup show="{{showDetailPopup}}" position="bottom" round>
+    <view class="popup-header">
+      <text class="popup-title">备忘录详情</text>
+      <van-icon name="cross" size="20px" bindtap="hideDetail" />
+    </view>
+    <view class="popup-content">
+      <view class="detail-item">
+        <text class="detail-label">标题</text>
+        <text class="detail-value">{{currentMemo.title}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">内容</text>
+        <text class="detail-value">{{currentMemo.description}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">优先级</text>
+        <text class="detail-value">{{currentMemo.priorityText}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">创建时间</text>
+        <text class="detail-value">{{currentMemo.createTime}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">目标日期</text>
+        <text class="detail-value">{{currentMemo.targetDate}}</text>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <van-button type="danger" block bind:click="deleteMemo">删除</van-button>
+    </view>
+  </van-popup>
+</view> 

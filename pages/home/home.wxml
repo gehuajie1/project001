@@ -1,0 +1,84 @@
+<view class="home-container">
+  <!-- 顶部用户信息 -->
+  <view class="user-info">
+    <view class="avatar-container">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/assets/icons/default-avatar.png'}}"></image>
+      <view class="user-name">{{userInfo.nickName || '未登录'}}</view>
+    </view>
+    <view class="weather-info" wx:if="{{weatherInfo}}">
+      <van-icon name="location-o" />
+      <text>{{weatherInfo.location}}</text>
+      <text>{{weatherInfo.weather}}</text>
+      <text>{{weatherInfo.temperature}}°C</text>
+    </view>
+  </view>
+
+  <!-- 纪念日倒计时 -->
+  <view class="anniversary-card card">
+    <view class="card-title">纪念日倒计时</view>
+    <view class="countdown" wx:if="{{anniversaryInfo}}">
+      <text class="days">{{anniversaryInfo.days}}</text>
+      <text class="unit">天</text>
+    </view>
+    <view class="anniversary-info">
+      <text>{{anniversaryInfo.date}}</text>
+      <text>{{anniversaryInfo.title}}</text>
+    </view>
+  </view>
+
+  <!-- 打卡记录 -->
+  <view class="checkin-card card">
+    <view class="card-title">今日打卡</view>
+    <view class="checkin-list">
+      <view class="checkin-item" wx:for="{{checkinList}}" wx:key="id">
+        <van-icon name="{{item.icon}}" />
+        <text>{{item.title}}</text>
+        <text class="status {{item.completed ? 'completed' : ''}}">
+          {{item.completed ? '已完成' : '未完成'}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近消费 -->
+  <view class="accounting-card card">
+    <view class="card-title">最近消费</view>
+    <view class="accounting-list">
+      <view class="accounting-item" wx:for="{{accountingList}}" wx:key="id">
+        <view class="item-info">
+          <text class="title">{{item.title}}</text>
+          <text class="amount {{item.type === 'income' ? 'income' : 'expense'}}">
+            {{item.type === 'income' ? '+' : '-'}}{{item.amount}}
+          </text>
+        </view>
+        <text class="date">{{item.date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 心愿清单 -->
+  <view class="wish-card card">
+    <view class="card-title">心愿清单</view>
+    <view class="wish-list">
+      <view class="wish-item" wx:for="{{wishList}}" wx:key="id">
+        <van-icon name="{{item.icon}}" />
+        <text>{{item.title}}</text>
+        <text class="status {{item.completed ? 'completed' : ''}}">
+          {{item.completed ? '已完成' : '进行中'}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备忘录 -->
+  <view class="memo-card card">
+    <view class="card-title">备忘录</view>
+    <view class="memo-list">
+      <view class="memo-item" wx:for="{{memoList}}" wx:key="id">
+        <van-icon name="notes-o" />
+        <text>{{item.content}}</text>
+        <text class="date">{{item.date}}</text>
+      </view>
+    </view>
+  </view>
+</view> 

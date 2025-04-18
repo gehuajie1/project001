@@ -1,0 +1,126 @@
+<view class="album-container">
+  <!-- 顶部统计 -->
+  <view class="stats-card card">
+    <view class="stats-item">
+      <text class="stats-value">{{totalPhotos}}</text>
+      <text class="stats-label">照片总数</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{totalAlbums}}</text>
+      <text class="stats-label">相册数量</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{totalVideos}}</text>
+      <text class="stats-label">视频数量</text>
+    </view>
+  </view>
+
+  <!-- 相册列表 -->
+  <view class="albums-card card">
+    <view class="card-header">
+      <text class="title">我的相册</text>
+      <van-button size="small" type="primary" bind:click="showAddAlbum">新建相册</van-button>
+    </view>
+    <view class="albums-grid">
+      <view class="album-item" wx:for="{{albums}}" wx:key="id" bind:click="openAlbum" data-id="{{item.id}}">
+        <image class="album-cover" src="{{item.cover}}" mode="aspectFill" />
+        <view class="album-info">
+          <text class="album-name">{{item.name}}</text>
+          <text class="album-count">{{item.count}}张</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近照片 -->
+  <view class="photos-card card">
+    <view class="card-header">
+      <text class="title">最近照片</text>
+      <van-button size="small" type="primary" bind:click="showAddPhoto">添加照片</van-button>
+    </view>
+    <view class="photos-grid">
+      <view class="photo-item" wx:for="{{recentPhotos}}" wx:key="id" bind:click="previewPhoto" data-url="{{item.url}}">
+        <image class="photo-image" src="{{item.url}}" mode="aspectFill" />
+        <view class="photo-info" wx:if="{{item.date}}">
+          <text class="photo-date">{{item.date}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新建相册弹窗 -->
+  <van-popup show="{{showAddAlbum}}" position="bottom" custom-style="height: 50%" bind:close="hideAddAlbum">
+    <view class="popup-header">
+      <text class="title">新建相册</text>
+      <van-icon name="cross" bind:click="hideAddAlbum" />
+    </view>
+    <view class="popup-content">
+      <van-field
+        label="相册名称"
+        placeholder="请输入相册名称"
+        value="{{albumForm.name}}"
+        bind:change="onAlbumNameChange"
+      />
+      <van-field
+        label="相册描述"
+        type="textarea"
+        placeholder="请输入相册描述"
+        value="{{albumForm.description}}"
+        bind:change="onAlbumDescriptionChange"
+      />
+      <view class="form-cover">
+        <text class="label">封面图片</text>
+        <view class="cover-upload" bind:click="chooseCover">
+          <image wx:if="{{albumForm.cover}}" src="{{albumForm.cover}}" mode="aspectFill" />
+          <van-icon wx:else name="plus" />
+        </view>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <van-button type="primary" block bind:click="submitAlbum">创建</van-button>
+    </view>
+  </van-popup>
+
+  <!-- 添加照片弹窗 -->
+  <van-popup show="{{showAddPhoto}}" position="bottom" custom-style="height: 50%" bind:close="hideAddPhoto">
+    <view class="popup-header">
+      <text class="title">添加照片</text>
+      <van-icon name="cross" bind:click="hideAddPhoto" />
+    </view>
+    <view class="popup-content">
+      <van-field
+        label="选择相册"
+        placeholder="请选择相册"
+        value="{{photoForm.albumName}}"
+        readonly
+        bind:click="showAlbumPicker"
+      />
+      <view class="photo-upload">
+        <text class="label">选择照片</text>
+        <view class="upload-grid">
+          <view class="upload-item" wx:for="{{photoForm.photos}}" wx:key="index">
+            <image src="{{item}}" mode="aspectFill" />
+            <van-icon name="cross" bind:click="removePhoto" data-index="{{index}}" />
+          </view>
+          <view class="upload-item add" bind:click="choosePhoto" wx:if="{{photoForm.photos.length < 9}}">
+            <van-icon name="plus" />
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <van-button type="primary" block bind:click="submitPhoto">上传</van-button>
+    </view>
+  </van-popup>
+
+  <!-- 相册选择器 -->
+  <van-popup show="{{showAlbumPicker}}" position="bottom" bind:close="hideAlbumPicker">
+    <van-picker
+      show-toolbar
+      title="选择相册"
+      columns="{{albumNames}}"
+      bind:confirm="onAlbumConfirm"
+      bind:cancel="hideAlbumPicker"
+    />
+  </van-popup>
+</view> 

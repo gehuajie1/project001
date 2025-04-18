@@ -1,0 +1,111 @@
+<view class="checkin-container">
+  <!-- 顶部统计 -->
+  <view class="stats-card card">
+    <view class="stats-item">
+      <text class="stats-value">{{totalDays}}</text>
+      <text class="stats-label">累计打卡</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{continuousDays}}</text>
+      <text class="stats-label">连续打卡</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{completionRate}}%</text>
+      <text class="stats-label">完成率</text>
+    </view>
+  </view>
+
+  <!-- 打卡日历 -->
+  <view class="calendar-card card">
+    <view class="calendar-header">
+      <text class="month">{{currentMonth}}</text>
+      <view class="calendar-nav">
+        <van-icon name="arrow-left" bind:click="prevMonth" />
+        <van-icon name="arrow" bind:click="nextMonth" />
+      </view>
+    </view>
+    <view class="calendar-body">
+      <view class="weekdays">
+        <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="days">
+        <view 
+          class="day {{item.isToday ? 'today' : ''}} {{item.isChecked ? 'checked' : ''}} {{item.isCurrentMonth ? '' : 'other-month'}}"
+          wx:for="{{days}}"
+          wx:key="date"
+          bindtap="handleDayClick"
+          data-date="{{item.date}}"
+        >
+          <text class="date">{{item.day}}</text>
+          <text class="check-icon" wx:if="{{item.isChecked}}">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 打卡记录 -->
+  <view class="records-card card">
+    <view class="card-header">
+      <text class="title">打卡记录</text>
+      <van-button size="small" type="primary" bind:click="showAddRecord">添加记录</van-button>
+    </view>
+    <view class="records-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-info">
+          <text class="record-title">{{item.title}}</text>
+          <text class="record-time">{{item.time}}</text>
+        </view>
+        <view class="record-content">{{item.content}}</view>
+        <view class="record-images" wx:if="{{item.images.length > 0}}">
+          <image 
+            wx:for="{{item.images}}" 
+            wx:key="*this" 
+            src="{{item}}" 
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-urls="{{item.images}}"
+            data-current="{{item}}"
+          />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加记录弹窗 -->
+  <van-popup show="{{showAdd}}" position="bottom" custom-style="height: 80%" bind:close="hideAddPopup">
+    <view class="popup-header">
+      <text class="title">添加打卡记录</text>
+      <van-icon name="cross" bind:click="hideAddPopup" />
+    </view>
+    <view class="popup-content">
+      <van-field
+        label="标题"
+        placeholder="请输入记录标题"
+        value="{{form.title}}"
+        bind:change="onTitleChange"
+      />
+      <van-field
+        label="内容"
+        type="textarea"
+        placeholder="请输入记录内容"
+        value="{{form.content}}"
+        bind:change="onContentChange"
+      />
+      <view class="upload-section">
+        <text class="label">上传图片</text>
+        <view class="upload-list">
+          <view class="upload-item" wx:for="{{form.images}}" wx:key="*this">
+            <image src="{{item}}" mode="aspectFill" />
+            <van-icon name="cross" bind:click="removeImage" data-index="{{index}}" />
+          </view>
+          <view class="upload-btn" bind:click="chooseImage" wx:if="{{form.images.length < 9}}">
+            <van-icon name="plus" />
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <van-button type="primary" block bind:click="submitForm">保存</van-button>
+    </view>
+  </van-popup>
+</view> 

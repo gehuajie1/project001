@@ -1,0 +1,112 @@
+<view class="accounting-container">
+  <!-- 顶部统计 -->
+  <view class="stats-card card">
+    <view class="stats-item">
+      <text class="stats-value">¥{{totalIncome}}</text>
+      <text class="stats-label">总收入</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">¥{{totalExpense}}</text>
+      <text class="stats-label">总支出</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">¥{{balance}}</text>
+      <text class="stats-label">结余</text>
+    </view>
+  </view>
+
+  <!-- 收支类型选择 -->
+  <view class="type-selector card">
+    <view class="type-item {{currentType === 'income' ? 'active' : ''}}" bindtap="switchType" data-type="income">
+      <text>收入</text>
+    </view>
+    <view class="type-item {{currentType === 'expense' ? 'active' : ''}}" bindtap="switchType" data-type="expense">
+      <text>支出</text>
+    </view>
+  </view>
+
+  <!-- 记账表单 -->
+  <view class="form-card card">
+    <van-field
+      label="金额"
+      type="digit"
+      placeholder="请输入金额"
+      value="{{form.amount}}"
+      bind:change="onAmountChange"
+    />
+    <van-field
+      label="分类"
+      placeholder="请选择分类"
+      value="{{form.category}}"
+      readonly
+      bind:click="showCategoryPicker"
+    />
+    <van-field
+      label="日期"
+      placeholder="请选择日期"
+      value="{{form.date}}"
+      readonly
+      bind:click="showDatePicker"
+    />
+    <van-field
+      label="备注"
+      type="textarea"
+      placeholder="请输入备注"
+      value="{{form.remark}}"
+      bind:change="onRemarkChange"
+    />
+  </view>
+
+  <!-- 最近记录 -->
+  <view class="records-card card">
+    <view class="card-header">
+      <text class="title">最近记录</text>
+      <van-button size="small" type="primary" bind:click="showAddRecord">添加记录</van-button>
+    </view>
+    <view class="records-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-info">
+          <text class="record-category">{{item.category}}</text>
+          <text class="record-amount {{item.type === 'income' ? 'income' : 'expense'}}">
+            {{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}
+          </text>
+        </view>
+        <view class="record-detail">
+          <text class="record-date">{{item.date}}</text>
+          <text class="record-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类选择器 -->
+  <van-popup show="{{showCategory}}" position="bottom" bind:close="hideCategoryPicker">
+    <view class="popup-header">
+      <text class="title">选择分类</text>
+      <van-icon name="cross" bind:click="hideCategoryPicker" />
+    </view>
+    <view class="category-list">
+      <view 
+        class="category-item {{form.category === item.name ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        bindtap="selectCategory"
+        data-category="{{item.name}}"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+  </van-popup>
+
+  <!-- 日期选择器 -->
+  <van-popup show="{{showDate}}" position="bottom" bind:close="hideDatePicker">
+    <van-datetime-picker
+      type="date"
+      value="{{currentDate}}"
+      min-date="{{minDate}}"
+      max-date="{{maxDate}}"
+      bind:confirm="onDateConfirm"
+      bind:cancel="hideDatePicker"
+    />
+  </van-popup>
+</view> 

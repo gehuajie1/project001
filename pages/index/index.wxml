@@ -1,0 +1,41 @@
+<view class="container">
+  <view class="header">
+    <van-image
+      round
+      width="80px"
+      height="80px"
+      src="{{userInfo.avatarUrl}}"
+      bind:click="onAvatarClick"
+    />
+    <view class="user-info">
+      <text class="nickname">{{userInfo.nickName}}</text>
+      <text class="greeting">{{greeting}}</text>
+    </view>
+  </view>
+
+  <view class="anniversary-card">
+    <van-cell-group inset>
+      <van-cell title="恋爱纪念日" value="{{anniversaryDays}}天" />
+      <van-cell title="下次纪念日" value="{{nextAnniversary}}" />
+    </van-cell-group>
+  </view>
+
+  <view class="function-grid">
+    <van-grid column-num="3" border="{{false}}">
+      <van-grid-item icon="photo-o" text="纪念日" url="/pages/anniversary/anniversary" />
+      <van-grid-item icon="location-o" text="打卡" url="/pages/checkin/checkin" />
+      <van-grid-item icon="balance-o" text="记账" url="/pages/accounting/accounting" />
+      <van-grid-item icon="gift-o" text="心愿" url="/pages/wish/wish" />
+      <van-grid-item icon="notes-o" text="备忘录" url="/pages/memo/memo" />
+      <van-grid-item icon="setting-o" text="设置" url="/pages/settings/settings" />
+    </van-grid>
+  </view>
+
+  <view class="weather-card">
+    <van-cell-group inset>
+      <van-cell title="今日天气" value="{{weatherInfo.temperature}}°C" />
+      <van-cell title="天气状况" value="{{weatherInfo.weather}}" />
+      <van-cell title="建议" value="{{weatherInfo.suggestion}}" />
+    </van-cell-group>
+  </view>
+</view> 

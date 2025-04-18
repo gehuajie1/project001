@@ -1,0 +1,11 @@
+.van-tabbar {
+  --tabbar-item-active-color: #ff4d4f;
+}
+
+.van-tabbar-item__icon {
+  font-size: 40rpx !important;
+}
+
+.van-tabbar-item__text {
+  font-size: 24rpx !important;
+} 

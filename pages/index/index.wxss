@@ -1,0 +1,171 @@
+.container {
+  padding: 20rpx;
+  background-color: #f7f8fa;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.user-info {
+  margin-left: 30rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #323233;
+  margin-bottom: 10rpx;
+}
+
+.greeting {
+  font-size: 28rpx;
+  color: #969799;
+}
+
+.anniversary-card {
+  margin-bottom: 20rpx;
+}
+
+.function-grid {
+  margin-bottom: 20rpx;
+}
+
+.weather-card {
+  margin-bottom: 20rpx;
+}
+
+/* 自定义Vant组件样式 */
+.van-grid-item__content {
+  padding: 20rpx 8rpx !important;
+}
+
+.van-grid-item__icon {
+  font-size: 48rpx !important;
+  color: #FF69B4 !important;
+}
+
+.van-grid-item__text {
+  color: #323233 !important;
+  font-size: 28rpx !important;
+  margin-top: 10rpx !important;
+}
+
+.van-cell {
+  padding: 20rpx !important;
+}
+
+.van-cell__title {
+  color: #969799 !important;
+}
+
+.van-cell__value {
+  color: #323233 !important;
+  font-weight: 500 !important;
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.date {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.week {
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 10rpx;
+}
+
+.weather-info {
+  display: flex;
+  align-items: center;
+}
+
+.weather-info image {
+  width: 60rpx;
+  height: 60rpx;
+  margin-right: 10rpx;
+}
+
+.weather-info text {
+  font-size: 28rpx;
+  color: #666;
+  margin-left: 10rpx;
+}
+
+.location-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.location-info image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 10rpx;
+}
+
+.location-info text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.love-days {
+  background: #FF69B4;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 40rpx;
+  text-align: center;
+  color: white;
+}
+
+.love-days .title {
+  font-size: 32rpx;
+  margin-bottom: 10rpx;
+}
+
+.love-days .days {
+  font-size: 60rpx;
+  font-weight: bold;
+}
+
+.love-days .unit {
+  font-size: 28rpx;
+}
+
+.quick-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40rpx;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-item image {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 10rpx;
+}
+
+.action-item text {
+  font-size: 28rpx;
+  color: #333;
+} 

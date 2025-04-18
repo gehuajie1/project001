@@ -1,0 +1,122 @@
+.container {
+  padding: 30rpx;
+  background-color: #f7f8fa;
+  min-height: 100vh;
+}
+
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30rpx;
+}
+
+.function-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.function-item image {
+  width: 100rpx;
+  height: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.function-item text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.tab-content {
+  padding: 20rpx;
+}
+
+.action-button {
+  margin-top: 30rpx !important;
+  background-color: #FF69B4 !important;
+  border: none !important;
+}
+
+/* 自定义Vant组件样式 */
+.van-tabs__line {
+  background-color: #FF69B4 !important;
+}
+
+.van-tab--active {
+  color: #FF69B4 !important;
+}
+
+.van-cell {
+  padding: 20rpx !important;
+}
+
+.van-cell__title {
+  color: #969799 !important;
+}
+
+.van-cell__value {
+  color: #323233 !important;
+  font-weight: 500 !important;
+}
+
+.van-cell-group--inset {
+  margin: 20rpx !important;
+  border-radius: 16rpx !important;
+  overflow: hidden !important;
+}
+
+.function-container {
+  padding: 20rpx;
+  background-color: #f7f8fa;
+}
+
+.function-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.function-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.item-icon {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.item-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.item-arrow {
+  color: #999;
+  font-size: 32rpx;
+} 

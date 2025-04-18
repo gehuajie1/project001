@@ -1,0 +1,99 @@
+<view class="container">
+    <view class="tab-bar">
+        <view class="tab-item {{currentab==0 ? 'active' : ''}}" data-current="0" bindtap='clicktab1'>
+            <van-icon name="chart-trending-o" /> 统计
+        </view>
+        <view class="tab-item {{currentab==1 ? 'active' : ''}}" data-current="1" bindtap='clicktab2'>
+            <van-icon name="records" />记账
+        </view>
+    </view>
+
+    <!-- 统计页面 -->
+    <view class="stats-container" wx:if="{{page == 1}}" animation="{{ani1}}">
+        <view class="date-picker">
+            <view class="picker-group">
+                <picker mode="date" value="{{startDate}}" start="{{minDate}}" end="{{maxDate}}" fields="month" bindchange="bindstartDateChange">
+                    <view class="picker">开始时间 {{startDate}}</view>
+                </picker>
+                <picker mode="date" value="{{endDate}}" start="{{minDate}}" end="{{maxDate}}" fields="month" bindchange="bindendDateChange">
+                    <view class="picker">结束时间 {{endDate}}</view>
+                </picker>
+            </view>
+        </view>
+
+        <view class="chart-section">
+            <view class="chart-container">
+                <view class="chart-wrapper">
+                    <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec_payments }}"></ec-canvas>
+                </view>
+                <view class="chart-summary">
+                    <view class="summary-title">收支状况</view>
+                    <view class="summary-item">总存款：{{deposit}}</view>
+                    <view class="summary-item">总支出：{{expenditure}}</view>
+                </view>
+            </view>
+        </view>
+
+        <view class="chart-section">
+            <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec_pay }}"></ec-canvas>
+        </view>
+
+        <view class="chart-section">
+            <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec_income }}"></ec-canvas>
+        </view>
+    </view>
+
+    <!-- 记账页面 -->
+    <view class="records-container" wx:if="{{page == 2}}" animation="{{ani2}}">
+        <view class="empty-state" wx:if="{{recordList.length == 0}}">
+            <text>暂无记录</text>
+        </view>
+        <view class="records-list" wx:else>
+            <view class="record-card" wx:for="{{recordList}}" wx:key="index" bindlongpress="deleteRecord" data-id="{{index}}">
+                <van-image wx:if="{{item.type =='收入'}}" width="3rem" height="3rem" fit="contain" src="{{incomeIcon}}" />
+                <van-image wx:else width="3rem" height="3rem" fit="contain" src="{{spendIcon}}" />
+                <view class="record-info">
+                    <view class="record-header">
+                        <text class="record-user">{{item.user}}</text>
+                        <text class="record-amount" wx:if="{{item.type =='收入'}}">进账：{{item.amount}}元</text>
+                        <text class="record-amount" wx:else>消费：{{item.amount}}元</text>
+                    </view>
+                    <text class="record-time">记录时间：{{item.time}}</text>
+                </view>
+            </view>
+        </view>
+        <van-button icon="star-o" color="#1a3eb4" bind:click="tapDialog" class="add-button" />
+    </view>
+</view>
+
+<!-- 记账弹窗 -->
+<van-dialog use-slot title="记账" show="{{dialogShow}}" show-confirm-button show-cancel-button bind:cancel="dialogOnClose">
+    <form bindsubmit="updategoodlist">
+        <van-cell-group inset wx:if="{{page == 2}}" class="form-card">
+            <van-field label="类型：" value="{{ bookKeep.type }}" center clearable required>
+                <van-radio-group slot="input" value="{{ bookKeep.type }}" bind:change="onChange" direction="horizontal">
+                    <van-radio name="支出">支出</van-radio>
+                    <van-radio name="收入">收入</van-radio>
+                </van-radio-group>
+            </van-field>
+            <van-field label="方式：" size="large" bindtap="showPopup" required center readonly model:value="{{ bookKeep.mode }}" name="mode" placeholder="请选择方式" data-name="mode" bind:input="inputValue" right-icon="arrow" input-class="fieldIconClass" />
+            <van-field label="金额：" size="large" required center model:value="{{ bookKeep.monry }}" name="moeny" placeholder="请填写金额" data-name="money" bind:input="inputValue" input-class="fieldIconClass" />
+            <van-field label="时间：" size="large" bindtap="showPopup" required center readonly model:value="{{ bookKeep.time }}" name="time" placeholder="请选择时间" data-name="time" bind:input="inputValue" right-icon="arrow" input-class="fieldIconClass" />
+        </van-cell-group>
+    </form>
+</van-dialog>
+
+<!-- 选择器弹窗 -->
+<van-popup show="{{ showPicker }}" bind:close="onClose" position="bottom" custom-style="height: 100%">
+    <block wx:if="{{clickType =='type'}}">
+        <van-picker show-toolbar title="类型" columns="{{ columns_type }}" bind:cancel="onClose" bind:confirm="onConfirm" bind:change="changePicker" />
+    </block>
+    <block wx:else-if="{{clickType =='mode'}}">
+        <van-picker wx:if="{{bookKeep.type =='支出'}}" show-toolbar title="方式" columns="{{ columns_mode_1 }}" bind:cancel="onClose" bind:confirm="onConfirm" bind:change="changePicker" />
+        <van-picker wx:if="{{bookKeep.type =='收入'}}" show-toolbar title="方式" columns="{{ columns_mode_2 }}" bind:cancel="onClose" bind:confirm="onConfirm" bind:change="changePicker" />
+        <van-picker wx:if="{{bookKeep.type ==''}}" show-toolbar title="请先选择类型" columns="{{ columns_mode_3 }}" bind:cancel="onClose" bind:confirm="onConfirm" bind:change="changePicker" />
+    </block>
+    <block wx:if="{{clickType =='time'}}">
+        <van-datetime-picker value="{{currentDate}}" title="时间选择" type="date" max-date="{{ maxDate }}" bind:confirm="confirmTime" bind:cancel="onClose" /> 
+    </block>
+</van-popup>

@@ -1,0 +1,140 @@
+.home-container {
+  padding: 20rpx;
+}
+
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.avatar-container {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.user-name {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.weather-info {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.weather-info text {
+  margin-left: 10rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+
+.anniversary-card .countdown {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 10rpx;
+}
+
+.anniversary-card .days {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.anniversary-card .unit {
+  font-size: 24rpx;
+  color: #666;
+  margin-left: 10rpx;
+}
+
+.anniversary-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.checkin-list, .wish-list, .memo-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkin-item, .wish-item, .memo-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.checkin-item:last-child, .wish-item:last-child, .memo-item:last-child {
+  border-bottom: none;
+}
+
+.checkin-item .status, .wish-item .status {
+  margin-left: auto;
+  font-size: 24rpx;
+}
+
+.checkin-item .status.completed, .wish-item .status.completed {
+  color: #07c160;
+}
+
+.accounting-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.accounting-item {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.accounting-item:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.item-info .title {
+  font-size: 28rpx;
+}
+
+.item-info .amount {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.item-info .amount.income {
+  color: #07c160;
+}
+
+.item-info .amount.expense {
+  color: #ff4d4f;
+}
+
+.date {
+  font-size: 24rpx;
+  color: #999;
+} 

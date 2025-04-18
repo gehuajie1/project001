@@ -1,0 +1,45 @@
+<view class="settings-container">
+  <!-- 用户信息 -->
+  <view class="user-info card">
+    <view class="avatar-container">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/assets/icons/default-avatar.png'}}"></image>
+      <view class="user-detail">
+        <text class="nickname">{{userInfo.nickName || '未登录'}}</text>
+        <text class="id">ID: {{userInfo.userId || '未设置'}}</text>
+      </view>
+    </view>
+    <van-button type="primary" size="small" bind:click="handleLogin" wx:if="{{!userInfo}}">登录</van-button>
+  </view>
+
+  <!-- 基本设置 -->
+  <van-cell-group title="基本设置" custom-class="cell-group">
+    <van-cell title="个人信息" is-link bind:click="navigateTo" data-url="/pages/settings/profile/profile" />
+    <van-cell title="修改密码" is-link bind:click="navigateTo" data-url="/pages/settings/password/password" />
+    <van-cell title="通知设置" is-link bind:click="navigateTo" data-url="/pages/settings/notification/notification" />
+    <van-cell title="隐私设置" is-link bind:click="navigateTo" data-url="/pages/settings/privacy/privacy" />
+  </van-cell-group>
+
+  <!-- 功能设置 -->
+  <van-cell-group title="功能设置" custom-class="cell-group">
+    <van-cell title="纪念日提醒" is-link bind:click="navigateTo" data-url="/pages/settings/anniversary/anniversary" />
+    <van-cell title="打卡提醒" is-link bind:click="navigateTo" data-url="/pages/settings/checkin/checkin" />
+    <van-cell title="记账提醒" is-link bind:click="navigateTo" data-url="/pages/settings/accounting/accounting" />
+    <van-cell title="心愿提醒" is-link bind:click="navigateTo" data-url="/pages/settings/wish/wish" />
+    <van-cell title="备忘录提醒" is-link bind:click="navigateTo" data-url="/pages/settings/memo/memo" />
+  </van-cell-group>
+
+  <!-- 其他设置 -->
+  <van-cell-group title="其他设置" custom-class="cell-group">
+    <van-cell title="关于我们" is-link bind:click="navigateTo" data-url="/pages/settings/about/about" />
+    <van-cell title="帮助与反馈" is-link bind:click="navigateTo" data-url="/pages/settings/feedback/feedback" />
+    <van-cell title="检查更新" is-link bind:click="checkUpdate" />
+    <van-cell title="清除缓存" is-link bind:click="clearCache" />
+  </van-cell-group>
+
+  <!-- 退出登录 -->
+  <view class="logout-container">
+    <van-button type="danger" block custom-class="logout-button" bind:click="handleLogout" wx:if="{{userInfo}}">
+      退出登录
+    </van-button>
+  </view>
+</view> 
