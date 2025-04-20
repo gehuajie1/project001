@@ -4,38 +4,60 @@
       round
       width="80px"
       height="80px"
-      src="{{userInfo.avatarUrl}}"
+      src="{{userInfo.avatarUrl || '/images/icons/default-avatar.png'}}"
       bind:click="onAvatarClick"
     />
     <view class="user-info">
-      <text class="nickname">{{userInfo.nickName}}</text>
-      <text class="greeting">{{greeting}}</text>
+      <text class="nickname">{{userInfo.nickName || '未登录'}}</text>
+      <text class="greeting">{{greeting || '欢迎使用情侣空间'}}</text>
     </view>
   </view>
 
   <view class="anniversary-card">
     <van-cell-group inset>
-      <van-cell title="恋爱纪念日" value="{{anniversaryDays}}天" />
-      <van-cell title="下次纪念日" value="{{nextAnniversary}}" />
+      <van-cell title="距离下一个纪念日" value="{{nextAnniversaryDays}}天" />
+      <van-cell title="纪念日类型" value="{{nextAnniversaryType}}" />
     </van-cell-group>
-  </view>
-
-  <view class="function-grid">
-    <van-grid column-num="3" border="{{false}}">
-      <van-grid-item icon="photo-o" text="纪念日" url="/pages/anniversary/anniversary" />
-      <van-grid-item icon="location-o" text="打卡" url="/pages/checkin/checkin" />
-      <van-grid-item icon="balance-o" text="记账" url="/pages/accounting/accounting" />
-      <van-grid-item icon="gift-o" text="心愿" url="/pages/wish/wish" />
-      <van-grid-item icon="notes-o" text="备忘录" url="/pages/memo/memo" />
-      <van-grid-item icon="setting-o" text="设置" url="/pages/settings/settings" />
-    </van-grid>
   </view>
 
   <view class="weather-card">
-    <van-cell-group inset>
-      <van-cell title="今日天气" value="{{weatherInfo.temperature}}°C" />
-      <van-cell title="天气状况" value="{{weatherInfo.weather}}" />
-      <van-cell title="建议" value="{{weatherInfo.suggestion}}" />
-    </van-cell-group>
+    <block wx:if="{{loading}}">
+      <view class="loading">
+        <van-loading size="24px" vertical>加载中...</van-loading>
+      </view>
+    </block>
+    <block wx:elif="{{error}}">
+      <view class="error">
+        <van-icon name="warning-o" size="24px" color="#ee0a24" />
+        <text>{{error}}</text>
+      </view>
+    </block>
+    <block wx:elif="{{weather}}">
+      <view class="weather-header">
+        <view class="location">
+          <van-icon name="location-o" />
+          <text>{{weather.city}} {{weather.district}}</text>
+        </view>
+        <text class="temperature">{{weather.temp}}°</text>
+      </view>
+      <view class="weather-info">
+        <view class="weather-item">
+          <text>天气</text>
+          <text>{{weather.text}}</text>
+        </view>
+        <view class="weather-item">
+          <text>湿度</text>
+          <text>{{weather.humidity}}%</text>
+        </view>
+        <view class="weather-item">
+          <text>风向</text>
+          <text>{{weather.windDir}}</text>
+        </view>
+        <view class="weather-item">
+          <text>风力</text>
+          <text>{{weather.windScale}}级</text>
+        </view>
+      </view>
+    </block>
   </view>
 </view> 

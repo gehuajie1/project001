@@ -1,5 +1,6 @@
 const app = getApp()
 const http = require('../../utils/request')
+const crypto = require('../../utils/crypto')
 
 Page({
   data: {
@@ -43,16 +44,20 @@ Page({
     }
 
     try {
-      const res = await http.post('/user/login', {
+      // 对密码进行MD5加密
+      const encryptedPassword = crypto.md5(password)
+      console.log('加密后的密码:', encryptedPassword) // 用于调试
+      
+      const res = await http.post('/users/login', {
         username,
-        password
+        password: encryptedPassword
       })
 
       // 保存用户信息和token
       wx.setStorageSync('userInfo', res.userInfo)
       wx.setStorageSync('token', res.token)
 
-      // 如果选择了记住我，保存登录信息
+      // 如果选择了记住我，保存登录信息（注意：保存原始密码，不保存加密后的密码）
       if (this.data.rememberMe) {
         wx.setStorageSync('loginInfo', {
           username,
@@ -71,6 +76,7 @@ Page({
       })
     } catch (error) {
       console.error('登录失败:', error)
+      // 错误信息已经在request.js中通过showToast显示，这里不需要重复显示
     }
   },
 

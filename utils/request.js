@@ -23,15 +23,15 @@ const responseInterceptor = (response) => {
   const { statusCode, data } = response
   if (statusCode === 200) {
     // 这里可以根据后端返回的数据结构进行调整
-    if (data.code === 0) {
-      return data.data
-    } else {
+    if(data.state == 'fail'){
       // 处理业务错误
       wx.showToast({
-        title: data.message || '请求失败',
+        title: data.msg || '请求失败',
         icon: 'none'
       })
       return Promise.reject(data)
+    }else if(data.state == 'success'){
+      return data.data
     }
   } else {
     // 处理HTTP错误
