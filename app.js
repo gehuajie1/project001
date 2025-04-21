@@ -1,6 +1,6 @@
 App({
   globalData: {
-    baseUrl: 'http://192.168.10.4:8080/api',  // 请替换为您的实际IP地址
+    baseUrl: 'http://10.10.88.224:8088/api',  // 请替换为您的实际IP地址
     userInfo: null
   },
   onLaunch() {

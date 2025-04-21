@@ -1,173 +1,204 @@
-const http = require('./request')
+const app = getApp()
 
-// 获取位置信息
-const getLocation = () => {
-  return new Promise((resolve, reject) => {
-    wx.getLocation({
-      type: 'gcj02',
-      success: resolve,
-      fail: (error) => {
-        console.error('获取位置信息失败:', error)
-        // 处理位置权限被拒绝的情况
-        if (error.errMsg && error.errMsg.includes('getLocation:fail auth deny')) {
-          wx.showModal({
-            title: '需要位置权限',
-            content: '获取天气信息需要位置权限，是否去设置？',
-            success: (res) => {
-              if (res.confirm) {
-                wx.openSetting({
-                  success: (settingRes) => {
-                    if (settingRes.authSetting['scope.userLocation']) {
-                      // 用户已授权，重新获取位置
-                      getLocation().then(resolve).catch(reject)
-                    } else {
-                      reject(new Error('用户未授权位置权限'))
-                    }
-                  }
-                })
-              } else {
-                reject(new Error('用户取消授权'))
-              }
-            }
-          })
-        } else {
-          reject(error)
-        }
-      }
-    })
-  })
-}
+// 高德天气API配置
+const AMAP_KEY = 'ed7eece954b5b1d7d2c160c17d8ecf32'
+const AMAP_WEATHER_URL = 'https://restapi.amap.com/v3/weather/weatherInfo'
+const AMAP_GEOCODE_URL = 'https://restapi.amap.com/v3/geocode/regeo'
 
-// 天气图标映射
-const weatherIconMap = {
-  'sunny': 'sunny',           // 晴
-  'cloudy': 'cloudy',         // 多云
-  'overcast': 'overcast',     // 阴
-  'lightrain': 'lightrain',   // 小雨
-  'heavyrain': 'heavyrain',   // 大雨
-  'snow': 'snow',             // 雪
-  'fog': 'fog',               // 雾
-  'haze': 'haze',             // 霾
-  'thunder': 'thunder',       // 雷
-  'sleet': 'sleet',           // 雨夹雪
-  'windy': 'windy',           // 风
-  'tornado': 'tornado',       // 龙卷风
-  'typhoon': 'typhoon'        // 台风
-}
-
-// 默认天气数据
-const defaultWeatherData = {
-  icon: 'sunny',
-  text: '晴',
-  temperature: '25',
-  location: '合肥市',
-  humidity: '--',
-  windDirection: '未知风向',
-  windScale: '0级',
-  pressure: '--',
-  visibility: '--',
-  updateTime: new Date().toLocaleString()
-}
+// 默认城市编码（合肥市）
+const DEFAULT_CITY_CODE = '340100'
 
 // 获取天气信息
-const getWeather = async () => {
-  try {
-    // 1. 获取位置信息
-    const location = await getLocation()
-    
-    // 2. 尝试使用腾讯地图API
+async function getWeather() {
     try {
-      const weather = await new Promise((resolve, reject) => {
-        wx.request({
-          url: 'https://apis.map.qq.com/ws/geocoder/v1/',
-          method: 'GET',
-          data: {
-            location: `${location.latitude},${location.longitude}`,
-            key: 'CEOBZ-BEHLQ-N5T5S-2CBI5-YKPRH-FEBGH',
-            get_poi: 0
-          },
-          success: (res) => {
-            if (res.statusCode === 200 && res.data.status === 0) {
-              // 获取到地址信息后，再获取天气信息
-              wx.request({
-                url: 'https://apis.map.qq.com/ws/weather/v1/',
-                method: 'GET',
+        // 获取位置信息
+        const location = await getLocation()
+
+        // 调用高德天气API
+        const res = await new Promise((resolve, reject) => {
+            wx.request({
+                url: AMAP_WEATHER_URL,
                 data: {
-                  location: `${location.latitude},${location.longitude}`,
-                  key: 'CEOBZ-BEHLQ-N5T5S-2CBI5-YKPRH-FEBGH'
+                    key: AMAP_KEY,
+                    city: location.adcode || DEFAULT_CITY_CODE,
+                    extensions: 'all' // 获取预报天气
                 },
-                success: (weatherRes) => {
-                  if (weatherRes.statusCode === 200 && weatherRes.data.status === 0) {
-                    const weatherData = weatherRes.data.result
-                    // 获取风向描述
-                    const getWindDirection = (degree) => {
-                      if (degree >= 337.5 || degree < 22.5) return '北风'
-                      if (degree >= 22.5 && degree < 67.5) return '东北风'
-                      if (degree >= 67.5 && degree < 112.5) return '东风'
-                      if (degree >= 112.5 && degree < 157.5) return '东南风'
-                      if (degree >= 157.5 && degree < 202.5) return '南风'
-                      if (degree >= 202.5 && degree < 247.5) return '西南风'
-                      if (degree >= 247.5 && degree < 292.5) return '西风'
-                      if (degree >= 292.5 && degree < 337.5) return '西北风'
-                      return '未知风向'
-                    }
-                    
-                    // 获取风力等级描述
-                    const getWindScale = (speed) => {
-                      if (speed < 1) return '0级'
-                      if (speed < 5) return '1-2级'
-                      if (speed < 10) return '3-4级'
-                      if (speed < 15) return '5-6级'
-                      if (speed < 20) return '7-8级'
-                      if (speed < 25) return '9-10级'
-                      return '10级以上'
-                    }
-                    
-                    resolve({
-                      icon: weatherIconMap[weatherData.now.icon] || 'sunny',
-                      text: weatherData.now.text,
-                      temperature: weatherData.now.temp,
-                      location: res.data.result.address,
-                      humidity: weatherData.now.humidity || '--',
-                      windDirection: getWindDirection(weatherData.now.wind360 || 0),
-                      windScale: getWindScale(weatherData.now.windSpeed || 0),
-                      pressure: weatherData.now.pressure || '--',
-                      visibility: weatherData.now.vis || '--',
-                      updateTime: weatherData.now.obsTime || new Date().toLocaleString()
-                    })
-                  } else {
-                    console.warn('腾讯地图API调用失败:', weatherRes.data)
-                    resolve(defaultWeatherData)
-                  }
+                success: (res) => {
+                    resolve(res)
                 },
-                fail: (error) => {
-                  console.error('获取天气信息失败:', error)
-                  resolve(defaultWeatherData)
+                fail: (err) => {
+                    reject(err)
                 }
-              })
-            } else {
-              console.warn('获取位置信息失败:', res.data)
-              resolve(defaultWeatherData)
-            }
-          },
-          fail: (error) => {
-            console.error('获取位置信息失败:', error)
-            resolve(defaultWeatherData)
-          }
+            })
         })
-      })
-      
-      return weather
+
+        if (res.data.status === '1') {
+            const weatherData = res.data.lives[0] // 实时天气数据
+            const forecastData = res.data.forecasts[0] // 预报天气数据
+
+            return {
+                location: location.district || '合肥市',
+                temperature: weatherData.temperature,
+                text: weatherData.weather,
+                humidity: weatherData.humidity,
+                windDirection: weatherData.winddirection,
+                windScale: weatherData.windpower,
+                pressure: weatherData.pressure,
+                visibility: weatherData.visibility,
+                updateTime: weatherData.reporttime,
+                suggestion: getWeatherSuggestion(weatherData.weather),
+                icon: getWeatherIcon(weatherData.weather),
+                // 预报天气数据
+                forecast: forecastData.casts.map(item => ({
+                    date: item.date,
+                    dayWeather: item.dayweather,
+                    nightWeather: item.nightweather,
+                    dayTemp: item.daytemp,
+                    nightTemp: item.nighttemp,
+                    dayWind: item.daywind,
+                    nightWind: item.nightwind,
+                    dayPower: item.daypower,
+                    nightPower: item.nightpower
+                }))
+            }
+        } else {
+            throw new Error(res.data.info || '获取天气信息失败')
+        }
     } catch (error) {
-      console.error('获取天气信息失败:', error)
-      return defaultWeatherData
+        console.error('获取天气信息失败:', error)
+        // 返回默认天气数据
+        return {
+            location: '合肥市',
+            temperature: '--',
+            text: '未知',
+            humidity: '--',
+            windDirection: '未知',
+            windScale: '--',
+            pressure: '--',
+            visibility: '--',
+            updateTime: new Date().toLocaleString(),
+            suggestion: '无法获取天气信息',
+            icon: 'unknown'
+        }
     }
-  } catch (error) {
-    console.error('获取位置信息失败:', error)
-    return defaultWeatherData
-  }
+}
+
+// 获取位置信息
+function getLocation() {
+    return new Promise((resolve, reject) => {
+        wx.getLocation({
+            type: 'gcj02',
+            success: async (res) => {
+                try {
+                    // 调用高德逆地理编码API
+                    const geoRes = await new Promise((resolveGeo, rejectGeo) => {
+                        wx.request({
+                            url: AMAP_GEOCODE_URL,
+                            data: {
+                                key: AMAP_KEY,
+                                location: `${res.longitude},${res.latitude}`
+                            },
+                            success: (geoRes) => {
+                                resolveGeo(geoRes)
+                            },
+                            fail: (geoErr) => {
+                                rejectGeo(geoErr)
+                            }
+                        })
+                    })
+
+                    if (geoRes.data.status === '1') {
+                        const addressComponent = geoRes.data.regeocode.addressComponent
+                        resolve({
+                            district: addressComponent.district,
+                            adcode: addressComponent.adcode
+                        })
+                    } else {
+                        throw new Error(geoRes.data.info || '获取位置信息失败')
+                    }
+                } catch (error) {
+                    console.error('获取位置信息失败:', error)
+                    resolve({
+                        district: '合肥市',
+                        adcode: DEFAULT_CITY_CODE
+                    })
+                }
+            },
+            fail: (err) => {
+                // 处理位置权限被拒绝的情况
+                if (err.errMsg && err.errMsg.includes('getLocation:fail auth deny')) {
+                    wx.showModal({
+                        title: '需要位置权限',
+                        content: '获取天气信息需要位置权限，是否去设置？',
+                        success: (res) => {
+                            if (res.confirm) {
+                                wx.openSetting({
+                                    success: (settingRes) => {
+                                        if (settingRes.authSetting['scope.userLocation']) {
+                                            // 用户已授权，重新获取位置
+                                            getLocation().then(resolve).catch(reject)
+                                        } else {
+                                            // 用户未授权，返回默认城市
+                                            resolve({
+                                                district: '合肥市',
+                                                adcode: DEFAULT_CITY_CODE
+                                            })
+                                        }
+                                    }
+                                })
+                            } else {
+                                // 用户取消授权，返回默认城市
+                                resolve({
+                                    district: '合肥市',
+                                    adcode: DEFAULT_CITY_CODE
+                                })
+                            }
+                        }
+                    })
+                } else {
+                    // 其他错误，返回默认城市
+                    resolve({
+                        district: '合肥市',
+                        adcode: DEFAULT_CITY_CODE
+                    })
+                }
+            }
+        })
+    })
+}
+
+// 根据天气状况获取建议
+function getWeatherSuggestion(weather) {
+    const suggestions = {
+        '晴': '天气晴朗，适合外出活动',
+        '多云': '天气多云，注意防晒',
+        '阴': '天气阴沉，建议室内活动',
+        '小雨': '有小雨，记得带伞',
+        '中雨': '有中雨，注意出行安全',
+        '大雨': '有大雨，建议减少外出',
+        '雷阵雨': '有雷阵雨，注意防雷',
+        '雾': '有雾，注意交通安全',
+        '霾': '有霾，建议减少户外活动'
+    }
+    return suggestions[weather] || '请根据天气情况合理安排活动'
+}
+
+// 根据天气状况获取图标
+function getWeatherIcon(weather) {
+    const icons = {
+        '晴': 'sunny',
+        '多云': 'cloudy',
+        '阴': 'overcast',
+        '小雨': 'light-rain',
+        '中雨': 'moderate-rain',
+        '大雨': 'heavy-rain',
+        '雷阵雨': 'thunderstorm',
+        '雾': 'fog',
+        '霾': 'haze'
+    }
+    return icons[weather] || 'unknown'
 }
 
 module.exports = {
-  getWeather
-} 
+    getWeather
+}

@@ -3,12 +3,13 @@
     "pages/login/login",
     "pages/index/index",
     "pages/function/function",
-    "pages/anniversary/anniversary",
     "pages/checkin/checkin",
     "pages/accounting/accounting",
-    "pages/chat/chat",
-    "pages/chat/detail/detail",
-    "pages/wish/wish"
+    "pages/wish/wish",
+    "pages/memo/memo",
+    "pages/album/album",
+    "pages/anniversary/anniversary",
+    "pages/wish/setttings"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -41,7 +42,7 @@
   ],
   "permission": {
     "scope.userLocation": {
-      "desc": "你的位置信息将用于获取天气信息"
+      "desc": "您的位置信息将用于打卡功能"
     }
   },
   "style": "v2",

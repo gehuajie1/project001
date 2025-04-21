@@ -15,8 +15,7 @@
 
   <view class="anniversary-card">
     <van-cell-group inset>
-      <van-cell title="距离下一个纪念日" value="{{nextAnniversaryDays}}天" />
-      <van-cell title="纪念日类型" value="{{nextAnniversaryType}}" />
+      <van-cell title="距离{{nextAnniversary.name}}" value="{{nextAnniversary.day}}天" />
     </van-cell-group>
   </view>
 
@@ -36,27 +35,41 @@
       <view class="weather-header">
         <view class="location">
           <van-icon name="location-o" />
-          <text>{{weather.city}} {{weather.district}}</text>
+          <text>{{weather.location}}</text>
         </view>
-        <text class="temperature">{{weather.temp}}°</text>
+        <view class="temperature-info">
+          <text class="temperature">{{weather.temperature}}°</text>
+          <text class="weather-text">{{weather.text}}</text>
+        </view>
       </view>
       <view class="weather-info">
-        <view class="weather-item">
-          <text>天气</text>
-          <text>{{weather.text}}</text>
-        </view>
         <view class="weather-item">
           <text>湿度</text>
           <text>{{weather.humidity}}%</text>
         </view>
         <view class="weather-item">
           <text>风向</text>
-          <text>{{weather.windDir}}</text>
+          <text>{{weather.windDirection}}</text>
         </view>
         <view class="weather-item">
           <text>风力</text>
-          <text>{{weather.windScale}}级</text>
+          <text>{{weather.windScale}}</text>
         </view>
+        <view class="weather-item">
+          <text>气压</text>
+          <text>{{weather.pressure}}hPa</text>
+        </view>
+        <view class="weather-item">
+          <text>能见度</text>
+          <text>{{weather.visibility}}km</text>
+        </view>
+      </view>
+      <view class="weather-suggestion">
+        <van-icon name="info-o" />
+        <text>{{weather.suggestion}}</text>
+      </view>
+      <view class="weather-update-time">
+        <text>更新时间：{{weather.updateTime}}</text>
       </view>
     </block>
   </view>

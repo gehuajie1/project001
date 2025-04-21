@@ -1,16 +1,10 @@
-// pages/setting/setting.js
+// pages/wish/setttings.js
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
-        bcImgSrc:"http://ruqc6jqdu.hn-bkt.clouddn.com/backgroundImage.jpg",
-        user:{
-            icon:"../../icon/icon/icon.jpg",
-            nickName:"大雄",
-            phone:18709858155
-        }
 
     },
 

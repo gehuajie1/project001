@@ -108,4 +108,32 @@
       <van-button type="primary" block bind:click="submitForm">保存</van-button>
     </view>
   </van-popup>
+
+  <!-- 地图区域 -->
+  <map
+    id="map"
+    class="map"
+    longitude="{{longitude}}"
+    latitude="{{latitude}}"
+    scale="14"
+    markers="{{markers}}"
+    show-location
+  ></map>
+
+  <!-- 打卡记录列表 -->
+  <scroll-view class="record-list" scroll-y>
+    <view class="record-item" wx:for="{{records}}" wx:key="id">
+      <view class="record-info">
+        <view class="record-location">{{item.location}}</view>
+        <view class="record-time">{{item.time}}</view>
+        <view class="record-note" wx:if="{{item.note}}">{{item.note}}</view>
+      </view>
+      <image class="record-image" src="{{item.image}}" mode="aspectFill" wx:if="{{item.image}}"></image>
+    </view>
+  </scroll-view>
+
+  <!-- 添加打卡按钮 -->
+  <view class="add-btn" bindtap="onAddCheckin">
+    <van-icon name="plus" size="24px" color="#fff" />
+  </view>
 </view> 

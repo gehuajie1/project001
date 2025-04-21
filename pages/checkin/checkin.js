@@ -26,12 +26,18 @@ Page({
     showAdd: false,
     
     // 当前选中的日期
-    currentDate: new Date()
+    currentDate: new Date(),
+
+    longitude: 116.397390,
+    latitude: 39.908860,
+    markers: []
   },
 
   onLoad: function() {
     this.initCalendar()
     this.loadCheckinData()
+    this.getLocation()
+    this.loadRecords()
   },
 
   // 初始化日历
@@ -205,17 +211,16 @@ Page({
   },
 
   // 选择图片
-  chooseImage: function() {
+  chooseImage: function(location) {
     wx.chooseImage({
-      count: 9 - this.data.form.images.length,
+      count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        this.setData({
-          'form.images': [...this.data.form.images, ...res.tempFilePaths]
-        })
+        const tempFilePath = res.tempFilePaths[0];
+        this.saveCheckin(location, tempFilePath);
       }
-    })
+    });
   },
 
   // 删除图片
@@ -264,5 +269,83 @@ Page({
       title: '添加成功',
       icon: 'success'
     })
+  },
+
+  // 获取当前位置
+  getLocation: function() {
+    wx.getLocation({
+      type: 'gcj02',
+      success: (res) => {
+        this.setData({
+          longitude: res.longitude,
+          latitude: res.latitude
+        });
+      }
+    });
+  },
+
+  // 加载打卡记录
+  loadRecords: function() {
+    // 这里应该从服务器或本地存储加载记录
+    const records = wx.getStorageSync('checkinRecords') || [];
+    this.setData({ records });
+    this.updateMarkers();
+  },
+
+  // 更新地图标记
+  updateMarkers: function() {
+    const markers = this.data.records.map((record, index) => ({
+      id: index,
+      latitude: record.latitude,
+      longitude: record.longitude,
+      title: record.location,
+      iconPath: '/images/marker.png',
+      width: 30,
+      height: 30
+    }));
+    this.setData({ markers });
+  },
+
+  // 添加打卡
+  onAddCheckin: function() {
+    wx.chooseLocation({
+      success: (res) => {
+        const location = {
+          name: res.name,
+          address: res.address,
+          latitude: res.latitude,
+          longitude: res.longitude
+        };
+        this.chooseImage(location);
+      }
+    });
+  },
+
+  // 保存打卡记录
+  saveCheckin: function(location, imagePath) {
+    const record = {
+      id: Date.now(),
+      location: location.name,
+      address: location.address,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      time: this.formatTime(new Date()),
+      image: imagePath
+    };
+
+    const records = [record, ...this.data.records];
+    this.setData({ records });
+    wx.setStorageSync('checkinRecords', records);
+    this.updateMarkers();
+  },
+
+  // 格式化时间
+  formatTime: function(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    return `${year}-${month}-${day} ${hour}:${minute}`;
   }
 }) 

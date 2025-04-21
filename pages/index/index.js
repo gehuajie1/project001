@@ -3,7 +3,6 @@ const weatherService = require('../../utils/weather')
 
 Page({
   data: {
-    userInfo: null,
     greeting: '',
     currentDate: '',
     weekDay: '',
@@ -16,33 +15,22 @@ Page({
     weather: null,
     loading: true,
     error: null,
-    anniversaryDays: 0,
-    nextAnniversaryDays: 0,
-    nextAnniversaryType: '',
-    nextAnniversary: '暂无'
+    nextAnniversary: {
+      day: 0,
+      name: ''
+    }
   },
 
   onLoad: function() {
     this.updateDateTime();
     this.calculateLoveDays();
     this.loadWeatherInfo();
-    this.loadUserInfo();
     this.setGreeting();
-    this.calculateAnniversaries();
     this.loadAnniversaryInfo();
   },
 
   onShow: function() {
-    // 每次显示页面时刷新用户信息和问候语
-    this.loadUserInfo();
     this.setGreeting();
-  },
-
-  loadUserInfo: function() {
-    const userInfo = wx.getStorageSync('userInfo')
-    if (userInfo) {
-      this.setData({ userInfo })
-    }
   },
 
   setGreeting: function() {
@@ -68,14 +56,6 @@ Page({
     }
     
     this.setData({ greeting })
-  },
-
-  onAvatarClick: function() {
-    if (!this.data.userInfo) {
-      wx.navigateTo({
-        url: '/pages/login/login'
-      })
-    }
   },
 
   onPullDownRefresh() {
@@ -150,16 +130,6 @@ Page({
     });
   },
 
-  getWeather: function() {
-    // 这里应该调用天气API
-    // 模拟数据
-    this.setData({
-      weatherIcon: 'sunny',
-      weatherText: '晴',
-      temperature: '25'
-    });
-  },
-
   navigateToAnniversary: function() {
     wx.navigateTo({
       url: '/pages/anniversary/anniversary'
@@ -178,77 +148,26 @@ Page({
     });
   },
 
-  // 计算纪念日
-  calculateAnniversaries() {
-    const now = new Date();
-    const weddingDate = new Date('2023-05-20'); // 结婚纪念日
-    const datingDate = new Date('2020-08-15'); // 恋爱纪念日
-
-    // 计算距离结婚纪念日的天数
-    const weddingDays = Math.floor((now - weddingDate) / (1000 * 60 * 60 * 24));
-    
-    // 计算距离恋爱纪念日的天数
-    const datingDays = Math.floor((now - datingDate) / (1000 * 60 * 60 * 24));
-
-    // 计算下一个纪念日
-    const nextWedding = new Date(weddingDate);
-    nextWedding.setFullYear(now.getFullYear());
-    if (nextWedding < now) {
-      nextWedding.setFullYear(now.getFullYear() + 1);
-    }
-
-    const nextDating = new Date(datingDate);
-    nextDating.setFullYear(now.getFullYear());
-    if (nextDating < now) {
-      nextDating.setFullYear(now.getFullYear() + 1);
-    }
-
-    // 确定下一个纪念日
-    let nextAnniversary;
-    let nextAnniversaryType;
-    if (nextWedding < nextDating) {
-      nextAnniversary = nextWedding;
-      nextAnniversaryType = '结婚纪念日';
-    } else {
-      nextAnniversary = nextDating;
-      nextAnniversaryType = '恋爱纪念日';
-    }
-
-    // 计算距离下一个纪念日的天数
-    const daysUntilNext = Math.ceil((nextAnniversary - now) / (1000 * 60 * 60 * 24));
-
-    this.setData({
-      anniversaryDays: datingDays,
-      nextAnniversaryDays: daysUntilNext,
-      nextAnniversaryType: nextAnniversaryType
-    });
-  },
-
   // 加载纪念日信息
   loadAnniversaryInfo() {
     wx.request({
       url: `${this.data.baseUrl}/anniversary/next`,
       method: 'GET',
       success: (res) => {
-        if (res.data.code === 0) {
+        if (res.data.state === 'success') {
           this.setData({
-            nextAnniversaryDays: res.data.data.days,
-            nextAnniversaryType: res.data.data.type
+            nextAnniversary: {
+              day: res.data.data.day,
+              name: res.data.data.name
+            }
           });
         } else {
-          wx.showToast({
-            title: '获取纪念日信息失败',
-            icon: 'none'
-          });
+          console.error('获取纪念日信息失败:', res.data.msg);
         }
       },
       fail: (err) => {
         console.error('获取纪念日信息失败:', err);
-        wx.showToast({
-          title: '获取纪念日信息失败',
-          icon: 'none'
-        });
       }
     });
-  },
+  }
 }); 

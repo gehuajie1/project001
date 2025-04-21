@@ -1,77 +1,21 @@
 <view class="function-container">
-  <!-- 功能模块列表 -->
+  <!-- 功能列表 -->
   <view class="function-list">
-    <!-- 纪念日模块 -->
-    <view class="function-item" bindtap="navigateTo" data-type="anniversary">
-      <view class="item-icon">
-        <van-icon name="calendar-o" size="48rpx" color="#ff4d4f" />
+    <view 
+      class="function-item" 
+      wx:for="{{functionList}}" 
+      wx:key="id"
+      bindtap="navigateTo"
+      data-type="{{item.type}}"
+    >
+      <view class="item-icon" style="background: {{item.color}}20">
+        <van-icon name="{{item.icon}}" size="48rpx" color="{{item.color}}" />
       </view>
       <view class="item-info">
-        <text class="item-title">纪念日</text>
-        <text class="item-desc">记录重要日期，设置提醒</text>
+        <text class="item-title">{{item.title}}</text>
+        <text class="item-desc">{{item.desc}}</text>
       </view>
-      <van-icon name="arrow" class="item-arrow" />
+      <van-icon name="arrow" size="32rpx" color="#969799" />
     </view>
-
-    <!-- 打卡模块 -->
-    <view class="function-item" bindtap="navigateTo" data-type="checkin">
-      <view class="item-icon">
-        <van-icon name="checked" size="48rpx" color="#07c160" />
-      </view>
-      <view class="item-info">
-        <text class="item-title">打卡</text>
-        <text class="item-desc">每日打卡，记录生活点滴</text>
-      </view>
-      <van-icon name="arrow" class="item-arrow" />
-    </view>
-
-    <!-- 记账模块 -->
-    <view class="function-item" bindtap="navigateTo" data-type="accounting">
-      <view class="item-icon">
-        <van-icon name="balance-o" size="48rpx" color="#1989fa" />
-      </view>
-      <view class="item-info">
-        <text class="item-title">记账</text>
-        <text class="item-desc">记录收支，管理财务</text>
-      </view>
-      <van-icon name="arrow" class="item-arrow" />
-    </view>
-
-    <!-- 心愿模块 -->
-    <view class="function-item" bindtap="navigateTo" data-type="wish">
-      <view class="item-icon">
-        <van-icon name="gift-o" size="48rpx" color="#ff976a" />
-      </view>
-      <view class="item-info">
-        <text class="item-title">心愿</text>
-        <text class="item-desc">记录心愿，一起实现</text>
-      </view>
-      <van-icon name="arrow" class="item-arrow" />
-    </view>
-
-    <!-- 备忘录模块 -->
-    <view class="function-item" bindtap="navigateTo" data-type="memo">
-      <view class="item-icon">
-        <van-icon name="notes-o" size="48rpx" color="#7232dd" />
-      </view>
-      <view class="item-info">
-        <text class="item-title">备忘录</text>
-        <text class="item-desc">记录重要事项，设置提醒</text>
-      </view>
-      <van-icon name="arrow" class="item-arrow" />
-    </view>
-
-    <!-- 相册模块 -->
-    <view class="function-item" bindtap="navigateTo" data-type="album">
-      <view class="item-icon">
-        <van-icon name="photo-o" size="48rpx" color="#ee0a24" />
-      </view>
-      <view class="item-info">
-        <text class="item-title">相册</text>
-        <text class="item-desc">记录美好瞬间，珍藏回忆</text>
-      </view>
-      <van-icon name="arrow" class="item-arrow" />
-    </view>
-
   </view>
 </view> 
