@@ -1,5 +1,5 @@
 const app = getApp()
-const http = require('../../utils/request')
+const { http }  = require('../../utils/request')
 const crypto = require('../../utils/crypto')
 
 Page({
@@ -46,34 +46,40 @@ Page({
     try {
       // 对密码进行MD5加密
       const encryptedPassword = crypto.md5(password)
-      console.log('加密后的密码:', encryptedPassword) // 用于调试
       
       const res = await http.post('/users/login', {
         username,
         password: encryptedPassword
       })
 
-      // 保存用户信息和token
-      wx.setStorageSync('userInfo', res.userInfo)
-      wx.setStorageSync('token', res.token)
+      console.log('登录返回数据:', res) // 添加日志，查看返回的数据结构
 
-      // 如果选择了记住我，保存登录信息（注意：保存原始密码，不保存加密后的密码）
-      if (this.data.rememberMe) {
-        wx.setStorageSync('loginInfo', {
-          username,
-          password
+      // 确保获取到返回值后再进行存储
+      if (res && res.data && res.data.userInfo && res.data.token) {
+        // 保存用户信息和token
+        wx.setStorageSync('userInfo', res.data.userInfo)
+        wx.setStorageSync('token', res.data.token)
+
+        // 如果选择了记住我，保存登录信息（注意：保存原始密码，不保存加密后的密码）
+        if (this.data.rememberMe) {
+          wx.setStorageSync('loginInfo', {
+            username,
+            password
+          })
+        }
+
+        wx.showToast({
+          title: '登录成功',
+          icon: 'success'
         })
+
+        // 跳转到首页
+        wx.switchTab({
+          url: '/pages/index/index'
+        })
+      } else {
+        throw new Error('登录失败：返回数据不完整')
       }
-
-      wx.showToast({
-        title: '登录成功',
-        icon: 'success'
-      })
-
-      // 跳转到首页
-      wx.switchTab({
-        url: '/pages/index/index'
-      })
     } catch (error) {
       console.error('登录失败:', error)
       // 错误信息已经在request.js中通过showToast显示，这里不需要重复显示

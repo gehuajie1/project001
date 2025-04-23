@@ -4,73 +4,48 @@
       round
       width="80px"
       height="80px"
-      src="{{userInfo.avatarUrl || '/images/icons/default-avatar.png'}}"
+      src="{{userInfo.avatarUrl || '/images/icons/user.png'}}"
       bind:click="onAvatarClick"
     />
     <view class="user-info">
-      <text class="nickname">{{userInfo.nickName || '未登录'}}</text>
+      <text class="nickname">{{userInfo.username || '未登录'}}</text>
       <text class="greeting">{{greeting || '欢迎使用情侣空间'}}</text>
     </view>
   </view>
 
   <view class="anniversary-card">
     <van-cell-group inset>
-      <van-cell title="距离{{nextAnniversary.name}}" value="{{nextAnniversary.day}}天" />
+      <van-cell title="距离{{nextAnniversary.name}}纪念日" value="{{nextAnniversary.day}}天" />
     </van-cell-group>
   </view>
 
-  <view class="weather-card">
-    <block wx:if="{{loading}}">
-      <view class="loading">
-        <van-loading size="24px" vertical>加载中...</van-loading>
-      </view>
-    </block>
-    <block wx:elif="{{error}}">
-      <view class="error">
-        <van-icon name="warning-o" size="24px" color="#ee0a24" />
-        <text>{{error}}</text>
-      </view>
-    </block>
-    <block wx:elif="{{weather}}">
-      <view class="weather-header">
-        <view class="location">
-          <van-icon name="location-o" />
-          <text>{{weather.location}}</text>
-        </view>
-        <view class="temperature-info">
-          <text class="temperature">{{weather.temperature}}°</text>
-          <text class="weather-text">{{weather.text}}</text>
+  <view class="weather-card" wx:if="{{!loading}}">
+    <view class="weather-header">
+      <text class="location">{{weatherData.city}}</text>
+      <text class="update-time">更新时间：{{weatherData.reportTime}}</text>
+    </view>
+    
+    <view class="weather-content">
+      <view class="today-weather">
+        <text class="temperature">{{weatherData.today.dayTemp}}°</text>
+        <view class="weather-info">
+          <text class="weather-text">{{weatherData.today.dayWeather}}</text>
+          <text class="wind-info">{{weatherData.today.dayWind}}风 {{weatherData.today.dayPower}}级</text>
         </view>
       </view>
-      <view class="weather-info">
-        <view class="weather-item">
-          <text>湿度</text>
-          <text>{{weather.humidity}}%</text>
-        </view>
-        <view class="weather-item">
-          <text>风向</text>
-          <text>{{weather.windDirection}}</text>
-        </view>
-        <view class="weather-item">
-          <text>风力</text>
-          <text>{{weather.windScale}}</text>
-        </view>
-        <view class="weather-item">
-          <text>气压</text>
-          <text>{{weather.pressure}}hPa</text>
-        </view>
-        <view class="weather-item">
-          <text>能见度</text>
-          <text>{{weather.visibility}}km</text>
+      
+      <view class="tomorrow-weather">
+        <text class="title">明日天气</text>
+        <view class="weather-detail">
+          <text class="weather-text">{{weatherData.tomorrow.dayWeather}}转{{weatherData.tomorrow.nightWeather}}</text>
+          <text class="temp-range">{{weatherData.tomorrow.dayTemp}}° ~ {{weatherData.tomorrow.nightTemp}}°</text>
         </view>
       </view>
-      <view class="weather-suggestion">
-        <van-icon name="info-o" />
-        <text>{{weather.suggestion}}</text>
-      </view>
-      <view class="weather-update-time">
-        <text>更新时间：{{weather.updateTime}}</text>
-      </view>
-    </block>
+    </view>
   </view>
-</view> 
+
+  <view class="loading" wx:if="{{loading}}">
+    <van-loading type="spinner" color="#1989fa" />
+    <text>加载天气中...</text>
+  </view>
+</view>

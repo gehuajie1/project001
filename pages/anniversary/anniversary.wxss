@@ -69,7 +69,17 @@
 }
 
 .popup-content {
-  padding: 30rpx;
+  padding: 20rpx;
+  height: calc(100% - 200rpx);
+  overflow-y: auto;
+}
+
+.popup-content .van-cell {
+  margin-bottom: 20rpx;
+}
+
+.popup-content .van-switch {
+  margin-left: auto;
 }
 
 .popup-buttons {
@@ -125,7 +135,7 @@
 }
 
 .add-btn {
-  background: #FF69B4;
+  background: #cab4bf;
   color: white;
   border-radius: 20rpx;
   padding: 20rpx 0;
@@ -245,12 +255,13 @@
   color: #333;
 }
 
-.popup-content {
-  padding: 30rpx;
-}
-
 .popup-footer {
-  padding: 30rpx;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background: #fff;
   border-top: 1rpx solid #eee;
 }
 

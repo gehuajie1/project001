@@ -1,119 +1,139 @@
-const app = getApp()
+const app = getApp();
+
 // 请求基础配置
 const baseConfig = {
-  baseURL: app.globalData.baseUrl, // 使用app.js中配置的baseURL
-  timeout: 10000, // 超时时间
+  baseURL: app.globalData.baseUrl,
+  timeout: 10000,
   header: {
     'content-type': 'application/json'
   }
-}
+};
+
+// 错误处理函数
+const handleError = (error, defaultMsg = '请求失败') => {
+  const errorMsg = error.msg || error.errMsg || defaultMsg;
+  wx.showToast({
+    title: errorMsg,
+    icon: 'none',
+    duration: 2000
+  });
+  console.error('请求错误:', error);
+  return Promise.reject(error);
+};
 
 // 请求拦截器
 const requestInterceptor = (config) => {
-  // 可以在这里添加token等认证信息
+  // 获取token
   const token = wx.getStorageSync('token')
-  if (token) {
-    config.header['Authorization'] = `Bearer ${token}`
+  
+  // 如果是登录接口，不添加token
+  if (config.url.includes('/login')) {
+    return config
   }
+  
+  // 添加请求头
+  if (token) {
+    config.header = {
+      ...config.header,
+      'Authorization': `Bearer ${token}`
+    }
+  }
+  
   return config
 }
 
 // 响应拦截器
 const responseInterceptor = (response) => {
-  const { statusCode, data } = response
-  if (statusCode === 200) {
-    // 这里可以根据后端返回的数据结构进行调整
-    if(data.state == 'fail'){
-      // 处理业务错误
-      wx.showToast({
-        title: data.msg || '请求失败',
-        icon: 'none'
-      })
-      return Promise.reject(data)
-    }else if(data.state == 'success'){
-      return data.data
-    }
-  } else {
-    // 处理HTTP错误
-    wx.showToast({
-      title: '网络错误',
-      icon: 'none'
+  // 检查响应状态
+  if (response.statusCode === 401) {
+    // token过期，清除本地存储并跳转到登录页
+    wx.removeStorageSync('token')
+    wx.removeStorageSync('userId')
+    wx.navigateTo({
+      url: '/pages/login/login'
     })
-    return Promise.reject(response)
+    return Promise.reject(new Error('登录已过期，请重新登录'))
   }
+  
+  return response.data
 }
 
-// 统一的请求方法
-const request = (options) => {
+// 封装请求方法
+const request = (config) => {
   // 合并配置
-  const config = {
-    ...baseConfig,
-    ...options,
-    url: `${baseConfig.baseURL}${options.url}`
+  const mergedConfig = {
+    ...config,
+    url: config.url.startsWith('http') ? config.url : `${baseConfig.baseURL}${config.url}`,
+    header: {
+      'content-type': 'application/json',
+      ...config.header
+    }
   }
-
+  
   // 应用请求拦截器
-  const finalConfig = requestInterceptor(config)
-
+  const finalConfig = requestInterceptor(mergedConfig)
+  
   return new Promise((resolve, reject) => {
     wx.request({
       ...finalConfig,
       success: (res) => {
+        // 应用响应拦截器
         try {
-          const result = responseInterceptor(res)
-          resolve(result)
+          const data = responseInterceptor(res)
+          resolve(data)
         } catch (error) {
           reject(error)
         }
       },
       fail: (error) => {
-        wx.showToast({
-          title: '网络错误',
-          icon: 'none'
-        })
+        console.error('请求失败:', error)
         reject(error)
       }
     })
   })
 }
 
-// 封装常用的请求方法
+// 常用请求方法封装
 const http = {
   get(url, data = {}, options = {}) {
-    return request({
-      url,
-      data,
-      method: 'GET',
-      ...options
-    })
+    return request({ url, data, method: 'GET', ...options });
   },
 
   post(url, data = {}, options = {}) {
-    return request({
-      url,
-      data,
-      method: 'POST',
-      ...options
-    })
+    return request({ url, data, method: 'POST', ...options });
   },
 
   put(url, data = {}, options = {}) {
-    return request({
-      url,
-      data,
-      method: 'PUT',
-      ...options
-    })
+    return request({ url, data, method: 'PUT', ...options });
   },
 
   delete(url, data = {}, options = {}) {
-    return request({
-      url,
-      data,
-      method: 'DELETE',
-      ...options
-    })
-  }
-}
+    return request({ url, data, method: 'DELETE', ...options });
+  },
 
-module.exports = http 
+  // 添加上传文件方法
+  upload(url, filePath, name = 'file', formData = {}, options = {}) {
+    return new Promise((resolve, reject) => {
+      const config = requestInterceptor({ url, ...options });
+      wx.uploadFile({
+        url: config.url,
+        filePath,
+        name,
+        formData,
+        header: config.header,
+        success: (res) => {
+          try {
+            // 尝试解析返回的数据
+            const data = JSON.parse(res.data);
+            resolve(responseInterceptor({ ...res, data }));
+          } catch (e) {
+            resolve(res);
+          }
+        },
+        fail: (err) => reject(handleError(err))
+      });
+    });
+  }
+};
+
+module.exports = { request, http };

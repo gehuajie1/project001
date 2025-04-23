@@ -1,4 +1,5 @@
 const app = getApp()
+const { request,http } = require('../../utils/request')
 
 Page({
   data: {
@@ -11,7 +12,7 @@ Page({
     
     // 添加纪念日表单
     form: {
-      title: '',
+      name: '',
       date: '',
       description: '',
       isYearly: true,
@@ -25,79 +26,124 @@ Page({
     
     // 日期选择器
     currentDate: new Date().getTime(),
-    minDate: new Date(2000, 0, 1).getTime(),
-    maxDate: new Date(2100, 11, 31).getTime(),
+    minDate: new Date('1900-01-01').getTime(),
+    maxDate: new Date('2100-12-31').getTime(),
     
     // 当前选中的纪念日
     currentAnniversary: null
   },
 
-  onLoad: function() {
+  onLoad() {
+    console.log('页面加载，初始数据:', this.data)
     this.loadAnniversaryList()
   },
 
   onShow: function() {
-    this.loadAnniversaryList()
+    // 移除这里的loadAnniversaryList调用
+    // this.loadAnniversaryList()
+  },
+
+  // 计算从纪念日到现在已经过去的天数
+  calculatePassedDays(date) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    // 解析日期字符串
+    const [year, month, day] = date.split('-').map(Number)
+    const anniversary = new Date(year, month - 1, day)
+    anniversary.setHours(0, 0, 0, 0)
+    
+    const diffTime = today - anniversary
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+    
+    return diffDays
+  },
+
+  // 计算距离最近纪念日的天数
+  calculateUpcomingDays(date) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    // 解析日期字符串
+    const [year, month, day] = date.split('-').map(Number)
+    const anniversary = new Date(today.getFullYear(), month - 1, day)
+    anniversary.setHours(0, 0, 0, 0)
+    
+    // 如果今年的纪念日已经过去，计算明年的
+    if (anniversary < today) {
+      anniversary.setFullYear(today.getFullYear() + 1)
+    }
+    
+    const diffTime = anniversary - today
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    console.log('日期计算:', {
+      today: today.toISOString(),
+      anniversary: anniversary.toISOString(),
+      diffDays
+    })
+    
+    return diffDays
   },
 
   // 加载纪念日列表
-  loadAnniversaryList: function() {
-    // 模拟数据
-    const anniversaryList = [
-      {
-        id: 1,
-        title: '恋爱纪念日',
-        date: '2023-01-01',
-        description: '我们在一起的第一天',
-        days: 365,
-        isYearly: true,
-        isImportant: true
-      },
-      {
-        id: 2,
-        title: '第一次约会',
-        date: '2023-02-14',
-        description: '情人节第一次约会',
-        days: 280,
-        isYearly: true,
-        isImportant: true
-      },
-      {
-        id: 3,
-        title: '生日',
-        date: '2023-05-20',
-        description: '亲爱的生日快乐',
-        days: 100,
-        isYearly: true,
-        isImportant: true
-      }
-    ]
-    
-    this.setData({
-      anniversaryList,
-      totalAnniversaries: anniversaryList.length,
-      upcomingDays: this.getUpcomingDays(anniversaryList)
-    })
-  },
+  async loadAnniversaryList() {
+    try {
+      wx.showLoading({ title: '加载中...' })
+      const res = await request({
+        url: '/anniversary/list',
+        method: 'GET'
+      })
 
-  // 获取最近纪念日天数
-  getUpcomingDays: function(list) {
-    if (!list || list.length === 0) return 0
-    const today = new Date()
-    const upcoming = list.reduce((min, item) => {
-      const date = new Date(item.date)
-      const days = Math.ceil((date - today) / (1000 * 60 * 60 * 24))
-      return days > 0 ? Math.min(min, days) : min
-    }, Infinity)
-    return upcoming === Infinity ? 0 : upcoming
+      if (res && res.state === 'success' && res.data) {
+        // 处理纪念日数据
+        const processedList = res.data.map(item => {
+          // 检查必要字段
+          if (!item.id || !item.name || !item.date) {
+            console.error('纪念日数据缺少必要字段:', item)
+            return null
+          }
+
+          return {
+            id: item.id,
+            name: item.name,
+            date: item.date,
+            description: item.description || '',
+            isYearly: item.isYearly || false,
+            isImportant: item.isImportant || false,
+            days: this.calculatePassedDays(item.date),
+            upcomingDays: this.calculateUpcomingDays(item.date)
+          }
+        }).filter(item => item !== null) // 过滤掉无效数据
+
+        // 按距离下一个纪念日的天数排序
+        processedList.sort((a, b) => a.upcomingDays - b.upcomingDays)
+
+        this.setData({
+          anniversaryList: processedList,
+          totalAnniversaries: processedList.length,
+          upcomingDays: processedList.length > 0 ? processedList[0].upcomingDays : 0
+        })
+      } else {
+        throw new Error(res?.message || '加载失败')
+      }
+    } catch (error) {
+      console.error('加载纪念日列表失败:', error)
+      wx.showToast({
+        title: error.message || '加载失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
   },
 
   // 显示添加弹窗
-  showAddPopup: function() {
+  showAddPopup() {
     this.setData({
       showAdd: true,
       form: {
-        title: '',
+        name: '',
         date: '',
         description: '',
         isYearly: true,
@@ -107,22 +153,22 @@ Page({
   },
 
   // 隐藏添加弹窗
-  hideAddPopup: function() {
+  hideAddPopup() {
     this.setData({ showAdd: false })
   },
 
   // 显示日期选择器
-  showDatePicker: function() {
+  showDatePicker() {
     this.setData({ showDatePicker: true })
   },
 
   // 隐藏日期选择器
-  hideDatePicker: function() {
+  hideDatePicker() {
     this.setData({ showDatePicker: false })
   },
 
   // 日期选择确认
-  onDateConfirm: function(e) {
+  onDateConfirm(e) {
     const date = new Date(e.detail)
     const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     this.setData({
@@ -131,103 +177,152 @@ Page({
     })
   },
 
-  // 表单输入处理
-  onTitleChange: function(e) {
-    this.setData({ 'form.title': e.detail })
+  // 表单字段变更
+  onTitleChange(e) {
+    this.setData({ 'form.name': e.detail })
   },
 
-  onDescriptionChange: function(e) {
+  onDescriptionChange(e) {
     this.setData({ 'form.description': e.detail })
   },
 
-  onYearlyChange: function(e) {
+  onYearlyChange(e) {
     this.setData({ 'form.isYearly': e.detail })
   },
 
-  onImportantChange: function(e) {
+  onImportantChange(e) {
     this.setData({ 'form.isImportant': e.detail })
   },
 
   // 提交表单
-  submitForm: function() {
-    const { title, date, description } = this.data.form
-    if (!title || !date) {
-      wx.showToast({
-        title: '请填写完整信息',
-        icon: 'none'
-      })
+  async submitForm() {
+    const { name, date, description, isYearly, isImportant } = this.data.form
+    if (!name) {
+      wx.showToast({ title: '请输入标题', icon: 'none' })
+      return
+    }
+    if (!date) {
+      wx.showToast({ title: '请选择日期', icon: 'none' })
       return
     }
 
-    // 模拟添加纪念日
-    const newAnniversary = {
-      id: Date.now(),
-      ...this.data.form,
-      days: this.calculateDays(date)
-    }
-
-    this.setData({
-      anniversaryList: [...this.data.anniversaryList, newAnniversary],
-      totalAnniversaries: this.data.totalAnniversaries + 1,
-      upcomingDays: this.getUpcomingDays([...this.data.anniversaryList, newAnniversary]),
-      showAdd: false
-    })
-
-    wx.showToast({
-      title: '添加成功',
-      icon: 'success'
-    })
-  },
-
-  // 计算距离天数
-  calculateDays: function(dateStr) {
-    const today = new Date()
-    const date = new Date(dateStr)
-    const days = Math.ceil((date - today) / (1000 * 60 * 60 * 24))
-    return days > 0 ? days : 0
-  },
-
-  // 显示纪念日详情
-  showDetail: function(e) {
-    const { id } = e.currentTarget.dataset
-    const anniversary = this.data.anniversaryList.find(item => item.id === id)
-    if (anniversary) {
-      this.setData({
-        currentAnniversary: anniversary,
-        showDetail: true
+    try {
+      wx.showLoading({ title: '保存中...' })
+      const res = await request({
+        url: getApp().globalData.baseUrl + '/anniversary/add',
+        method: 'POST',
+        data: {
+          name,
+          date,
+          description,
+          isYearly,
+          isImportant,
+        }
       })
+      
+      if (res && res.state === 'success') {
+        wx.showToast({ title: '添加成功' })
+        this.hideAddPopup()
+        this.loadAnniversaryList()
+      } else {
+        throw new Error(res.message || '添加失败')
+      }
+    } catch (error) {
+      console.error('添加纪念日失败:', error)
+      wx.showToast({
+        title: error.message || '添加失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
     }
   },
 
-  // 隐藏纪念日详情
-  hideDetail: function() {
+  // 显示详情
+  async showDetail(e) {
+    const id = e.currentTarget.dataset.id
+    console.log('开始加载纪念日详情，ID:', id)
+    
+    try {
+      wx.showLoading({ title: '加载中...' })
+      const res = await request({
+        url: getApp().globalData.baseUrl + `/anniversary/detail/${id}`,
+        method: 'GET'
+      })
+      
+      console.log('获取到的纪念日详情响应:', res)
+      
+      if (!res) {
+        console.error('返回数据为空')
+        throw new Error('返回数据为空')
+      }
+      
+      if (res.state === 'success' && res.data) {
+        console.log('纪念日详情数据:', res.data)
+        this.setData({
+          showDetail: true,
+          currentAnniversary: {
+            ...res.data,
+            days: this.calculateUpcomingDays(res.data.date)
+          }
+        })
+      } else {
+        console.error('返回数据格式错误:', res)
+        throw new Error(res.message || res.msg || '加载失败')
+      }
+    } catch (error) {
+      console.error('加载纪念日详情失败:', error)
+      console.error('错误详情:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response
+      })
+      wx.showToast({
+        title: error.message || '加载失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
+  },
+
+  // 隐藏详情
+  hideDetail() {
     this.setData({ showDetail: false })
   },
 
   // 删除纪念日
-  deleteAnniversary: function() {
-    const { currentAnniversary } = this.data
-    if (!currentAnniversary) return
+  async deleteAnniversary() {
+    if (!this.data.currentAnniversary) return
 
-    wx.showModal({
-      title: '提示',
-      content: '确定要删除这个纪念日吗？',
-      success: (res) => {
-        if (res.confirm) {
-          const newList = this.data.anniversaryList.filter(item => item.id !== currentAnniversary.id)
-          this.setData({
-            anniversaryList: newList,
-            totalAnniversaries: newList.length,
-            upcomingDays: this.getUpcomingDays(newList),
-            showDetail: false
-          })
+    try {
+      const res = await wx.showModal({
+        title: '提示',
+        content: '确定要删除这个纪念日吗？'
+      })
 
+      if (res.confirm) {
+        wx.showLoading({ title: '删除中...' })
+        const deleteRes = await http.delete(`/anniversary/delete/${this.data.currentAnniversary.id}`)
+        if (deleteRes.state === 'success') {
+          wx.showToast({ title: '删除成功' })
+          this.hideDetail()
+          this.loadAnniversaryList()
+        } else {
           wx.showToast({
-            title: '删除成功',
-            icon: 'success'
+            title: deleteRes.msg || '删除失败',
+            icon: 'none'
           })
         }
       }
-    })
+    } catch (error) {
+      console.error('删除纪念日失败:', error)
+      wx.showToast({
+        title: '删除失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
   }
 }) 

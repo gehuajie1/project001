@@ -1,5 +1,6 @@
 const app = getApp()
-const weatherService = require('../../utils/weather')
+const { getWeather } = require('../../utils/weather')
+const {request} = require('../../utils/request')
 
 Page({
   data: {
@@ -12,7 +13,31 @@ Page({
     location: '正在获取位置...',
     loveDays: 0,
     baseUrl: app.globalData.baseUrl,
-    weather: null,
+    userInfo: null,
+    weatherData: {
+      city: '',
+      reportTime: '',
+      today: {
+        dayWeather: '',
+        nightWeather: '',
+        dayTemp: '',
+        nightTemp: '',
+        dayWind: '',
+        nightWind: '',
+        dayPower: '',
+        nightPower: ''
+      },
+      tomorrow: {
+        dayWeather: '',
+        nightWeather: '',
+        dayTemp: '',
+        nightTemp: '',
+        dayWind: '',
+        nightWind: '',
+        dayPower: '',
+        nightPower: ''
+      }
+    },
     loading: true,
     error: null,
     nextAnniversary: {
@@ -24,13 +49,15 @@ Page({
   onLoad: function() {
     this.updateDateTime();
     this.calculateLoveDays();
-    this.loadWeatherInfo();
+    this.loadWeather();
     this.setGreeting();
     this.loadAnniversaryInfo();
+    this.loadUserInfo();
   },
 
   onShow: function() {
     this.setGreeting();
+    this.loadUserInfo();
   },
 
   setGreeting: function() {
@@ -59,52 +86,75 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.loadWeatherInfo()
+    this.loadWeather().then(() => {
+      wx.stopPullDownRefresh()
+    })
   },
 
-  async loadWeatherInfo() {
+  async loadWeather() {
     try {
-      this.setData({ loading: true, error: null })
-      const weather = await weatherService.getWeather()
-      this.setData({ 
-        weather,
-        loading: false,
-        weatherIcon: weather.icon || 'sunny',
-        weatherText: weather.text || '晴',
-        temperature: weather.temperature || '--',
-        location: weather.location || '位置获取失败'
-      })
-    } catch (error) {
-      console.error('加载天气信息失败:', error)
-      if (error.errMsg && error.errMsg.includes('getLocation:fail auth deny')) {
-        // 处理位置权限被拒绝的情况
-        wx.showModal({
-          title: '需要位置权限',
-          content: '获取天气信息需要位置权限，是否去设置？',
-          success: (res) => {
-            if (res.confirm) {
-              wx.openSetting({
-                success: (settingRes) => {
-                  if (settingRes.authSetting['scope.userLocation']) {
-                    // 用户已授权，重新获取天气
-                    this.loadWeatherInfo();
-                  }
-                }
-              });
-            }
+      console.log('开始加载天气数据')
+      this.setData({ loading: true })
+      const res = await getWeather()
+      console.log('获取到的天气数据:', res)
+      
+      if (res && res.forecasts && res.forecasts[0]) {
+        const forecast = res.forecasts[0]
+        const today = forecast.casts[0]
+        const tomorrow = forecast.casts[1]
+        
+        console.log('解析后的数据:', {
+          forecast,
+          today,
+          tomorrow
+        })
+        
+        // 确保所有必要的数据都存在
+        if (!today || !tomorrow) {
+          throw new Error('天气数据不完整')
+        }
+
+        const newWeatherData = {
+          city: forecast.city || '',
+          reportTime: forecast.reporttime || '',
+          today: {
+            dayWeather: today.dayweather || '',
+            nightWeather: today.nightweather || '',
+            dayTemp: today.daytemp || '',
+            nightTemp: today.nighttemp || '',
+            dayWind: today.daywind || '',
+            nightWind: today.nightwind || '',
+            dayPower: today.daypower || '',
+            nightPower: today.nightpower || ''
+          },
+          tomorrow: {
+            dayWeather: tomorrow.dayweather || '',
+            nightWeather: tomorrow.nightweather || '',
+            dayTemp: tomorrow.daytemp || '',
+            nightTemp: tomorrow.nighttemp || '',
+            dayWind: tomorrow.daywind || '',
+            nightWind: tomorrow.nightwind || '',
+            dayPower: tomorrow.daypower || '',
+            nightPower: tomorrow.nightpower || ''
           }
-        });
+        }
+
+        console.log('处理后的天气数据:', newWeatherData)
+        this.setData({ 
+          weatherData: newWeatherData,
+          loading: false,
+          error: null
+        })
+        console.log('设置数据后的状态:', this.data)
+      } else {
+        throw new Error('天气数据格式错误')
       }
+    } catch (error) {
+      console.error('加载天气数据失败:', error)
       this.setData({ 
         error: '获取天气信息失败，请下拉刷新重试',
-        loading: false,
-        weatherIcon: 'error',
-        weatherText: '获取失败',
-        temperature: '--',
-        location: '位置获取失败'
+        loading: false
       })
-    } finally {
-      wx.stopPullDownRefresh()
     }
   },
 
@@ -130,44 +180,55 @@ Page({
     });
   },
 
-  navigateToAnniversary: function() {
-    wx.navigateTo({
-      url: '/pages/anniversary/anniversary'
-    });
-  },
-
-  navigateToCheckin: function() {
-    wx.navigateTo({
-      url: '/pages/checkin/checkin'
-    });
-  },
-
-  navigateToWish: function() {
-    wx.navigateTo({
-      url: '/pages/wish/wish'
-    });
-  },
-
   // 加载纪念日信息
-  loadAnniversaryInfo() {
-    wx.request({
-      url: `${this.data.baseUrl}/anniversary/next`,
-      method: 'GET',
-      success: (res) => {
-        if (res.data.state === 'success') {
-          this.setData({
-            nextAnniversary: {
-              day: res.data.data.day,
-              name: res.data.data.name
-            }
-          });
-        } else {
-          console.error('获取纪念日信息失败:', res.data.msg);
-        }
-      },
-      fail: (err) => {
-        console.error('获取纪念日信息失败:', err);
+  async loadAnniversaryInfo() {
+    try {
+      const res = await request({
+        url: '/anniversary/next',
+        method: 'GET'
+      })
+
+      if (res && res.state === 'success' && res.data) {
+        this.setData({
+          nextAnniversary: {
+            day: res.data.days,
+            name: res.data.title
+          }
+        })
       }
-    });
+    } catch (error) {
+      console.error('加载纪念日信息失败:', error)
+    }
+  },
+
+  // 获取天气图标
+  getWeatherIcon(weather) {
+    if (!weather || typeof weather !== 'string') return 'cloudy-o'
+    
+    const weatherMap = {
+      '晴': 'sunny',
+      '多云': 'cloudy',
+      '阴': 'cloudy-o',
+      '小雨': 'rain',
+      '中雨': 'rain',
+      '大雨': 'rain',
+      '暴雨': 'rain',
+      '雷阵雨': 'lightning',
+      '小雪': 'snow',
+      '中雪': 'snow',
+      '大雪': 'snow',
+      '雾': 'fog',
+      '霾': 'fog',
+      '风': 'wind'
+    }
+    return weatherMap[weather] || 'cloudy-o'
+  },
+
+  // 加载用户信息
+  loadUserInfo() {
+    const userInfo = wx.getStorageSync('userInfo')
+    if (userInfo) {
+      this.setData({ userInfo })
+    }
   }
-}); 
+});

@@ -21,8 +21,7 @@
     <view class="anniversary-item card" wx:for="{{anniversaryList}}" wx:key="id" bindtap="showDetail" data-id="{{item.id}}">
       <view class="item-header">
         <text class="title">{{item.title}}</text>
-        <text class="days" wx:if="{{item.days > 0}}">还有{{item.days}}天</text>
-        <text class="days today" wx:else>今天</text>
+        <text class="days">已经{{item.days}}天</text>
       </view>
       <view class="item-content">
         <text class="date">{{item.date}}</text>
@@ -52,7 +51,7 @@
         label="日期"
         placeholder="请选择日期"
         value="{{form.date}}"
-        bind:click="showDatePicker"
+        bind:tap="showDatePicker"
         readonly
       />
       <van-field
@@ -62,12 +61,14 @@
         value="{{form.description}}"
         bind:change="onDescriptionChange"
       />
-      <van-cell title="每年提醒" center>
-        <van-switch size="24" checked="{{form.isYearly}}" bind:change="onYearlyChange" />
-      </van-cell>
-      <van-cell title="重要纪念日" center>
-        <van-switch size="24" checked="{{form.isImportant}}" bind:change="onImportantChange" />
-      </van-cell>
+      <van-cell-group>
+        <van-cell title="每年提醒" center>
+          <van-switch size="24" checked="{{form.isYearly}}" bind:change="onYearlyChange" />
+        </van-cell>
+        <van-cell title="重要纪念日" center>
+          <van-switch size="24" checked="{{form.isImportant}}" bind:change="onImportantChange" />
+        </van-cell>
+      </van-cell-group>
     </view>
     <view class="popup-footer">
       <van-button type="primary" block bind:click="submitForm">保存</van-button>

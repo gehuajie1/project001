@@ -82,12 +82,10 @@ Page({
 
   // 加载用户信息
   loadUserInfo: function() {
-    const userInfo = app.globalData.userInfo
+    const userInfo = wx.getStorageSync('userInfo')
     if (userInfo) {
-      this.setData({ userInfo })
-    } else {
-      app.getUserInfo(userInfo => {
-        this.setData({ userInfo })
+      this.setData({
+        userInfo: userInfo
       })
     }
   },

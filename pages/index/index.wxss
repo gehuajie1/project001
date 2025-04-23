@@ -1,5 +1,5 @@
 .container {
-  padding: 20rpx;
+  padding: 24rpx;
   background-color: #f7f8fa;
   min-height: 100vh;
 }
@@ -7,15 +7,16 @@
 .header {
   display: flex;
   align-items: center;
-  padding: 30rpx;
-  background-color: #fff;
-  border-radius: 16rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding: 32rpx;
+  background: linear-gradient(135deg, #FF69B4 0%, #FFB6C1 100%);
+  border-radius: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(255, 105, 180, 0.15);
+  color: #fff;
 }
 
 .user-info {
-  margin-left: 30rpx;
+  margin-left: 32rpx;
   display: flex;
   flex-direction: column;
 }
@@ -23,36 +24,55 @@
 .nickname {
   font-size: 36rpx;
   font-weight: bold;
-  color: #323233;
-  margin-bottom: 10rpx;
+  color: #fff;
+  margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .greeting {
   font-size: 28rpx;
-  color: #969799;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .anniversary-card {
   background: #fff;
-  border-radius: 12rpx;
-  padding: 30rpx;
-  margin: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.anniversary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8rpx;
+  height: 100%;
+  background: linear-gradient(to bottom, #FF69B4, #FFB6C1);
 }
 
 .anniversary-card .van-cell {
-  padding: 20rpx 0;
+  padding: 20rpx 32rpx;
+  white-space: nowrap;
 }
 
 .anniversary-card .van-cell__title {
   color: #666;
   font-size: 28rpx;
+  white-space: nowrap;
+  flex: none;
+  width: 240rpx;
 }
 
 .anniversary-card .van-cell__value {
   color: #ff4d4f;
-  font-size: 28rpx;
+  font-size: 32rpx;
   font-weight: bold;
+  white-space: nowrap;
+  flex: 1;
 }
 
 .anniversary-card .van-cell:last-child .van-cell__value {
@@ -60,129 +80,127 @@
   font-weight: bold;
 }
 
+.anniversary-card .van-cell::after {
+  display: none;
+}
+
 .function-grid {
   margin-bottom: 20rpx;
 }
 
 .weather-card {
-  background: #fff;
-  border-radius: 12rpx;
-  padding: 30rpx;
-  margin: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 24rpx;
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
 }
 
-/* 自定义Vant组件样式 */
-.van-grid-item__content {
-  padding: 20rpx 8rpx !important;
-}
-
-.van-grid-item__icon {
-  font-size: 48rpx !important;
-  color: #FF69B4 !important;
-}
-
-.van-grid-item__text {
-  color: #323233 !important;
-  font-size: 28rpx !important;
-  margin-top: 10rpx !important;
-}
-
-.van-cell {
-  padding: 20rpx !important;
-  white-space: nowrap !important;
-}
-
-.van-cell__title {
-  color: #969799 !important;
-  white-space: nowrap !important;
-  flex: none !important;
-  width: 240rpx !important;
-}
-
-.van-cell__value {
-  color: #323233 !important;
-  font-weight: 500 !important;
-  white-space: nowrap !important;
-  flex: 1 !important;
-}
-
-.date-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.date {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: #333;
-}
-
-.week {
-  font-size: 28rpx;
-  color: #666;
-  margin-top: 10rpx;
+.weather-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+  transform: rotate(30deg);
 }
 
 .weather-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30rpx;
+  margin-bottom: 24rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .location {
-  display: flex;
-  align-items: center;
-  font-size: 28rpx;
-  color: #666;
+  font-size: 36rpx;
+  font-weight: bold;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .location van-icon {
   margin-right: 8rpx;
 }
 
-.temperature-info {
+.update-time {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.weather-content {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  gap: 24rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.today-weather {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 16rpx 0;
 }
 
 .temperature {
-  font-size: 48rpx;
+  font-size: 72rpx;
   font-weight: bold;
-  color: #333;
-  line-height: 1.2;
-}
-
-.weather-text {
-  font-size: 28rpx;
-  color: #666;
-  margin-top: 4rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  min-width: 120rpx;
 }
 
 .weather-info {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20rpx;
-  margin-bottom: 30rpx;
-}
-
-.weather-item {
   display: flex;
   flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
 }
 
-.weather-item text:first-child {
-  font-size: 24rpx;
-  color: #999;
-  margin-bottom: 8rpx;
-}
-
-.weather-item text:last-child {
-  font-size: 28rpx;
-  color: #333;
+.weather-text {
+  font-size: 32rpx;
   font-weight: 500;
+}
+
+.wind-info {
+  font-size: 26rpx;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.tomorrow-weather {
+  border-top: 1rpx solid rgba(255, 255, 255, 0.3);
+  padding-top: 24rpx;
+  margin-top: 16rpx;
+}
+
+.title {
+  font-size: 28rpx;
+  margin-bottom: 12rpx;
+  display: block;
+  font-weight: 500;
+}
+
+.weather-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.temp-range {
+  font-size: 26rpx;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
 }
 
 .weather-suggestion {
@@ -204,18 +222,23 @@
   color: #666;
 }
 
-.weather-update-time {
-  text-align: right;
-  font-size: 24rpx;
-  color: #999;
-}
-
-.loading, .error {
+.loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40rpx 0;
+  padding: 40rpx;
+  gap: 20rpx;
+}
+
+.loading text {
+  color: #666;
+  font-size: 28rpx;
+}
+
+.weather-update-time {
+  text-align: right;
+  font-size: 24rpx;
   color: #999;
 }
 
@@ -446,4 +469,166 @@
 .item-days {
   font-size: 24rpx;
   color: #ff4d4f;
+}
+
+.update-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.weather-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.today-weather {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.today-weather .van-icon {
+  margin-right: 20rpx;
+}
+
+.temperature {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-right: 20rpx;
+}
+
+.weather-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-text {
+  font-size: 28rpx;
+  color: #fff;
+  margin-bottom: 8rpx;
+}
+
+.wind-info {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tomorrow-weather {
+  border-top: 1rpx solid rgba(255, 255, 255, 0.2);
+  padding-top: 20rpx;
+}
+
+.tomorrow-weather .title {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 12rpx;
+}
+
+.weather-detail {
+  display: flex;
+  align-items: center;
+}
+
+.weather-detail .van-icon {
+  margin-right: 12rpx;
+}
+
+.temp-range {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 20rpx;
+}
+
+.weather-suggestion {
+  display: flex;
+  align-items: center;
+  background: #f8f8f8;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.weather-suggestion van-icon {
+  margin-right: 10rpx;
+  color: #1989fa;
+}
+
+.weather-suggestion text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.weather-update-time {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.loading text {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 20rpx;
+}
+
+.anniversary-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20rpx 0;
+}
+
+.anniversary-days {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 10rpx;
+}
+
+.days-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.days-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-left: 4rpx;
+}
+
+.anniversary-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.anniversary-name-highlight {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin: 0 8rpx;
+}
+
+.anniversary-title {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+  white-space: nowrap;
+}
+
+.anniversary-value {
+  color: #ff4d4f;
+  font-size: 32rpx;
+  font-weight: bold;
+  white-space: nowrap;
 } 

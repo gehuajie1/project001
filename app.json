@@ -72,6 +72,7 @@
     "van-tabbar-item": "@vant/weapp/tabbar-item/index",
     "van-grid": "@vant/weapp/grid/index",
     "van-grid-item": "@vant/weapp/grid-item/index",
-    "van-image": "@vant/weapp/image/index"
+    "van-image": "@vant/weapp/image/index",
+    "van-switch": "@vant/weapp/switch/index"
   }
 } 
